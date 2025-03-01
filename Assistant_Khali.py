@@ -312,7 +312,7 @@ async def entretien(ctx):
         "authority": "panel.visionrp.fr",
         "accept": "application/json, text/plain, */*",
         "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-        "cookie": "token=VFvnq42Mt9eEvtjX2VvzxivXitKY5H",
+        "cookie": "", ## TOKEN ICI
         "if-none-match": "W/^\^8d-J6buw80pkbXNkgWI63AsW5B3G2g^^",
         "referer": "https://panel.visionrp.fr/",
         "sec-ch-ua": "^\^Not",
