@@ -3,7 +3,7 @@ import time
 import json
 from pynput.keyboard import Controller, Key
 
-logs_directory = ## LOGS FIVEM DIRECTORY
+logs_directory = "" ## PATH VERS LE DOSSIER DE LOGS
 processed_reports = set()
 last_position = 0
 keyboard = Controller()
