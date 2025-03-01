@@ -1,0 +1,45 @@
+import http.client
+import json
+import time
+
+conn = http.client.HTTPSConnection("api-lifeinvader.visionrp.fr")
+
+id_list = [
+
+"66423cdf5ae9dfd3d0d850d6", "6641ffa95ae9dfd3d0d816e6", "6640eeaa5ae9dfd3d0d79492", "6640b1635ae9dfd3d0d76107", "663fa4605ae9dfd3d0d6e189", "663f78305ae9dfd3d0d6c126", "663f176d5ae9dfd3d0d69766", "663ed8045ae9dfd3d0d686e7", "663ec5785ae9dfd3d0d6794a", "663ea1b35ae9dfd3d0d667f8"
+
+]
+
+common_payload = {
+    "postId": "666595f9f2f007240785e392"
+}
+
+headers = {
+    'authority': "api-lifeinvader.visionrp.fr",
+    'accept': "application/json, text/plain, */*",
+    'accept-language': "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
+    'content-type': "application/json",
+    'cookie': "", ## TOKEN ICI
+    'origin': "https://lifeinvader.visionrp.fr",
+    'referer': "https://lifeinvader.visionrp.fr/",
+    'sec-ch-ua': "Not A(Brand;v=99, Opera GX;v=107, Chromium;v=121",
+    'sec-ch-ua-mobile': "?0",
+    'sec-ch-ua-platform': "Windows",
+    'sec-fetch-dest': "empty",
+    'sec-fetch-mode': "cors",
+    'sec-fetch-site': "same-site",
+    'user-agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 OPR/107.0.0.0"
+    }
+
+for user_id in id_list:
+    current_payload = common_payload.copy()
+    current_payload["_id"] = user_id
+    json_payload = json.dumps(current_payload)
+    conn.request("POST", "/posts/like", json_payload, headers)
+    res = conn.getresponse()
+    data = res.read()
+    print(f"Response for user {user_id}: {data.decode('utf-8')}")
+    time.sleep(1)
+
+conn.close()
+
