@@ -1,8 +1,6 @@
 // FEUILLLE DE CALCUL : https://docs.google.com/spreadsheets/d/1I3kV3VnvaqblWgyh_oDlwz39jXAjVXOHUOTTmn2033Y/edit?usp=sharing
 // Script d'enregistreuse de ventes pour BS NORD - NOFACE (@Khalifouille)
 
-// Script d'enregistreuse de ventes pour BS NORD - NOFACE (@Khalifouille)
-
 function mettreAJourVentes() {
   const feuilleActive = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const nomVendeur = feuilleActive.getRange('L3').getValue();
@@ -10,24 +8,23 @@ function mettreAJourVentes() {
 
   Logger.log("🔹 Données brutes récupérées : " + JSON.stringify(data));
 
-const mappingArticles = {
-  "🍔 Burger Double": "Burger Double",
-  "🍔 Burger Classic": "Burger Classic",
-  "🍟 Frites": "Frites",
-  "🍴 Menu Classic": "Menu Classic",
-  "🍴 Menu Double": "Menu Double",
-  "🍴 Menu Contrat": "Menu Contrat",
-  "🍗 Tenders": "Tenders",
-  "🥗 Petite Salade": "Petite Salade",
-  "🥤 Soda": "Boisson",
-  "🥤 Café": "Boisson",
-  "🐄 Milkshake": "MilkShake"
-};
-
+  const mappingArticles = {
+    "🍔 Burger Double": "Burger Double",
+    "🍔 Burger Classic": "Burger Classic",
+    "🍟 Frites": "Frites",
+    "🍴 Menu Classic": "Menu Classic",
+    "🍴 Menu Double": "Menu Double",
+    "🍴 Menu Contrat": "Menu Contrat",
+    "🍗 Tenders": "Tenders",
+    "🥗 Petite Salade": "Petite Salade",
+    "🥤 Soda": "Boisson",
+    "🥤 Café": "Boisson",
+    "🐄 Milkshake": "MilkShake"
+  };
 
   const totaux = {
-    "Burger Double" : 0,
-    "Burger Classic" :0,
+    "Burger Double": 0,
+    "Burger Classic": 0,
     "Menu Classic": 0,
     "Menu Double": 0,
     "Menu Contrat": 0,
@@ -54,9 +51,17 @@ const mappingArticles = {
 
   Logger.log("🔹 Totaux calculés : " + JSON.stringify(totaux));
 
-  let feuilleDestination = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Semaine du 10/03 au 17/03");
+  const aujourdHui = new Date();
+  const debutSemaine = new Date(aujourdHui);
+  debutSemaine.setDate(aujourdHui.getDate() - aujourdHui.getDay() + 1); 
+  const finSemaine = new Date(debutSemaine);
+  finSemaine.setDate(debutSemaine.getDate() + 6); 
+
+  const nomFeuille = `Semaine du ${formatDate(debutSemaine)} au ${formatDate(finSemaine)}`;
+
+  let feuilleDestination = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nomFeuille);
   if (!feuilleDestination) {
-    feuilleDestination = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Semaine du 10/03 au 17/03");
+    feuilleDestination = SpreadsheetApp.getActiveSpreadsheet().insertSheet(nomFeuille);
     feuilleDestination.appendRow(["Vendeur", "", "", "Menu Classic", "Menu Double", "Menu Contrat", "Tenders", "Petite Salade", "Boisson", "MilkShake"]);
   }
 
@@ -79,7 +84,7 @@ const mappingArticles = {
 
   Logger.log("🔹 Valeurs actuelles en feuille : " + valeursActuelles.join(", "));
 
-const nouveauxTotaux = [
+  const nouveauxTotaux = [
     Number(valeursActuelles[0]) + totaux["Burger Double"],
     Number(valeursActuelles[1]) + totaux["Burger Classic"],
     Number(valeursActuelles[2]) + totaux["Menu Classic"],
@@ -89,13 +94,18 @@ const nouveauxTotaux = [
     Number(valeursActuelles[6]) + totaux["Petite Salade"],
     Number(valeursActuelles[7]) + totaux["Boisson"],
     Number(valeursActuelles[8]) + totaux["MilkShake"]
-];
+  ];
 
   Logger.log("🔹 Nouveaux totaux avant écriture : " + nouveauxTotaux.join(", "));
 
-  feuilleDestination.getRange(ligneVendeur, 4, 1, 9).setValues([nouveauxTotaux.map(x => Number(x))]);
+  feuilleDestination.getRange(ligneVendeur, 4, 1, 9).setValues([nouveauxTotaux]);
 
   Logger.log("✅ Mise à jour effectuée avec succès !");
-  SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour !");
+  SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour dans la feuille : " + nomFeuille);
 }
 
+function formatDate(date) {
+  const jour = String(date.getDate()).padStart(2, '0');
+  const mois = String(date.getMonth() + 1).padStart(2, '0');
+  return `${jour}/${mois}`;
+}
