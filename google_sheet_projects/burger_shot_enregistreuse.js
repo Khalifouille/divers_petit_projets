@@ -98,7 +98,7 @@ function mettreAJourVentes() {
   feuilleDestination.getRange(ligneVendeur, 4, 1, 7).setValues([nouveauxTotaux]);
 
   Logger.log("✅ Mise à jour effectuée avec succès !");
-  feuilleActive.getRange('C13:D').clearContent(); 
+  feuilleActive.getRange('D13:D').clearContent(); 
   Logger.log("🧹 Quantités effacées dans la plage C13:D");
 
   SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour dans la feuille : " + nomFeuille);
