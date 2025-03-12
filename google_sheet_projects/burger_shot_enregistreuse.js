@@ -61,8 +61,8 @@ function mettreAJourVentes() {
 
   let feuilleDestination = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nomFeuille);
   if (!feuilleDestination) {
-    feuilleDestination = SpreadsheetApp.getActiveSpreadsheet().insertSheet(nomFeuille);
-    feuilleDestination.appendRow(["Vendeur", "", "", "Menu Classic", "Menu Double", "Menu Contrat", "Tenders", "Petite Salade", "Boisson", "MilkShake"]);
+    SpreadsheetApp.getUi().alert("📄 La feuille de la semaine actuelle n'est pas créer : " + nomFeuille);
+    return;
   }
 
   const dataVendeurs = feuilleDestination.getRange('A2:A').getValues();
