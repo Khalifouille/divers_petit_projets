@@ -1,6 +1,3 @@
-// FEUILLLE DE CALCUL : https://docs.google.com/spreadsheets/d/1I3kV3VnvaqblWgyh_oDlwz39jXAjVXOHUOTTmn2033Y/edit?usp=sharing
-// Script d'enregistreuse de ventes pour BS NORD - NOFACE (@Khalifouille)
-
 function mettreAJourVentes() {
   const feuilleActive = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const nomVendeur = feuilleActive.getRange('L3').getValue();
@@ -12,27 +9,30 @@ function mettreAJourVentes() {
     "🍔 Burger Double": "Burger Double",
     "🍔 Burger Classic": "Burger Classic",
     "🍟 Frites": "Frites",
-    "🍴 Menu Classic": "Menu Classic",
-    "🍴 Menu Double": "Menu Double",
-    "🍴 Menu Contrat": "Menu Contrat",
     "🍗 Tenders": "Tenders",
     "🥗 Petite Salade": "Petite Salade",
+    "🐄 Milkshake": "MilkShake",
     "🥤 Soda": "Boisson",
     "🥤 Café": "Boisson",
-    "🐄 Milkshake": "MilkShake"
+    "🍴 Menu Double": "Menu Double",
+    "🍴 Menu Classic": "Menu Classic",
+    "🍴 Menu Contrat": "Menu Contrat"
   };
 
-  const totaux = {
-    "Burger Double": 0,
-    "Burger Classic": 0,
-    "Menu Classic": 0,
-    "Menu Double": 0,
-    "Menu Contrat": 0,
-    "Tenders": 0,
-    "Petite Salade": 0,
-    "Boisson": 0,
-    "MilkShake": 0
-  };
+  const colonnesDestination = [
+    "Menu Classic",
+    "Menu Double",
+    "Menu Contrat",
+    "Tenders",
+    "Petite Salade",
+    "Boisson",
+    "MilkShake"
+  ];
+
+  const totaux = {};
+  colonnesDestination.forEach(colonne => {
+    totaux[colonne] = 0;
+  });
 
   data.forEach(row => {
     let article = row[0] ? row[0].toString().trim() : "";
@@ -42,8 +42,10 @@ function mettreAJourVentes() {
 
     if (article && !isNaN(quantite) && mappingArticles.hasOwnProperty(article)) {
       let nomArticle = mappingArticles[article];
-      totaux[nomArticle] += quantite;
-      Logger.log("✅ Ajouté à " + nomArticle + " => Total maintenant : " + totaux[nomArticle]);
+      if (colonnesDestination.includes(nomArticle)) {
+        totaux[nomArticle] += quantite;
+        Logger.log("✅ Ajouté à " + nomArticle + " => Total maintenant : " + totaux[nomArticle]);
+      }
     } else {
       Logger.log("⚠️ Article ignoré ou non reconnu : " + article);
     }
@@ -76,7 +78,7 @@ function mettreAJourVentes() {
   }
 
   if (ligneVendeur === -1) {
-    feuilleDestination.appendRow([nomVendeur, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    feuilleDestination.appendRow([nomVendeur, 0, 0, 0, 0, 0, 0, 0]);
     ligneVendeur = feuilleDestination.getLastRow();
   }
 
@@ -84,21 +86,13 @@ function mettreAJourVentes() {
 
   Logger.log("🔹 Valeurs actuelles en feuille : " + valeursActuelles.join(", "));
 
-  const nouveauxTotaux = [
-    Number(valeursActuelles[0]) + totaux["Burger Double"],
-    Number(valeursActuelles[1]) + totaux["Burger Classic"],
-    Number(valeursActuelles[2]) + totaux["Menu Classic"],
-    Number(valeursActuelles[3]) + totaux["Menu Double"],
-    Number(valeursActuelles[4]) + totaux["Menu Contrat"],
-    Number(valeursActuelles[5]) + totaux["Tenders"],
-    Number(valeursActuelles[6]) + totaux["Petite Salade"],
-    Number(valeursActuelles[7]) + totaux["Boisson"],
-    Number(valeursActuelles[8]) + totaux["MilkShake"]
-  ];
+  const nouveauxTotaux = colonnesDestination.map((colonne, index) => {
+    return Number(valeursActuelles[index]) + totaux[colonne];
+  });
 
   Logger.log("🔹 Nouveaux totaux avant écriture : " + nouveauxTotaux.join(", "));
 
-  feuilleDestination.getRange(ligneVendeur, 4, 1, 7).setValues([nouveauxTotaux.slice(0, 7)]);
+  feuilleDestination.getRange(ligneVendeur, 4, 1, 7).setValues([nouveauxTotaux]);
 
   Logger.log("✅ Mise à jour effectuée avec succès !");
   SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour dans la feuille : " + nomFeuille);
