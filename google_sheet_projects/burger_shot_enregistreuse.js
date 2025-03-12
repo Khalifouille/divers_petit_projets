@@ -1,6 +1,8 @@
 // FEUILLLE DE CALCUL : https://docs.google.com/spreadsheets/d/1I3kV3VnvaqblWgyh_oDlwz39jXAjVXOHUOTTmn2033Y/edit?usp=sharing
 // Script d'enregistreuse de ventes pour BS NORD - NOFACE (@Khalifouille)
 
+// Script d'enregistreuse de ventes pour BS NORD - NOFACE (@Khalifouille)
+
 function mettreAJourVentes() {
   const feuilleActive = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const nomVendeur = feuilleActive.getRange('L3').getValue();
@@ -77,17 +79,17 @@ const mappingArticles = {
 
   Logger.log("🔹 Valeurs actuelles en feuille : " + valeursActuelles.join(", "));
 
-  const nouveauxTotaux = [
-    valeursActuelles[0] + totaux["Burger Double"],
-    valeursActuelles[1] + totaux["Burger Classic"],
-    valeursActuelles[2] + totaux["Menu Classic"],
-    valeursActuelles[3] + totaux["Menu Double"],
-    valeursActuelles[4] + totaux["Menu Contrat"],
-    valeursActuelles[5] + totaux["Tenders"],
-    valeursActuelles[6] + totaux["Petite Salade"],
-    valeursActuelles[7] + totaux["Boisson"],
-    valeursActuelles[8] + totaux["MilkShake"]
-  ];
+const nouveauxTotaux = [
+    Number(valeursActuelles[0]) + totaux["Burger Double"],
+    Number(valeursActuelles[1]) + totaux["Burger Classic"],
+    Number(valeursActuelles[2]) + totaux["Menu Classic"],
+    Number(valeursActuelles[3]) + totaux["Menu Double"],
+    Number(valeursActuelles[4]) + totaux["Menu Contrat"],
+    Number(valeursActuelles[5]) + totaux["Tenders"],
+    Number(valeursActuelles[6]) + totaux["Petite Salade"],
+    Number(valeursActuelles[7]) + totaux["Boisson"],
+    Number(valeursActuelles[8]) + totaux["MilkShake"]
+];
 
   Logger.log("🔹 Nouveaux totaux avant écriture : " + nouveauxTotaux.join(", "));
 
@@ -96,3 +98,4 @@ const mappingArticles = {
   Logger.log("✅ Mise à jour effectuée avec succès !");
   SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour !");
 }
+
