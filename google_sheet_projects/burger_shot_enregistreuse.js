@@ -80,7 +80,7 @@ function mettreAJourVentes() {
     ligneVendeur = feuilleDestination.getLastRow();
   }
 
-  const valeursActuelles = feuilleDestination.getRange(ligneVendeur, 4, 1, 9).getValues()[0];
+  const valeursActuelles = feuilleDestination.getRange(ligneVendeur, 4, 1, 7).getValues()[0];
 
   Logger.log("🔹 Valeurs actuelles en feuille : " + valeursActuelles.join(", "));
 
@@ -98,7 +98,7 @@ function mettreAJourVentes() {
 
   Logger.log("🔹 Nouveaux totaux avant écriture : " + nouveauxTotaux.join(", "));
 
-  feuilleDestination.getRange(ligneVendeur, 4, 1, 9).setValues([nouveauxTotaux]);
+  feuilleDestination.getRange(ligneVendeur, 4, 1, 7).setValues([nouveauxTotaux.slice(0, 7)]);
 
   Logger.log("✅ Mise à jour effectuée avec succès !");
   SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour dans la feuille : " + nomFeuille);
