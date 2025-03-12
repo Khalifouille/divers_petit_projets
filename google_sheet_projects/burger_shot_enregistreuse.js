@@ -61,7 +61,7 @@ function mettreAJourVentes() {
 
   let feuilleDestination = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nomFeuille);
   if (!feuilleDestination) {
-    SpreadsheetApp.getUi().alert("📄 La feuille de la semaine actuelle n'est pas créer : " + nomFeuille);
+    SpreadsheetApp.getUi().alert("📄 La feuille de la semaine actuelle n'est pas créée : " + nomFeuille);
     return;
   }
 
@@ -76,7 +76,7 @@ function mettreAJourVentes() {
   }
 
   if (ligneVendeur === -1) {
-    feuilleDestination.appendRow([nomVendeur, 0, 0, 0, 0, 0, 0, 0]);
+    feuilleDestination.appendRow([nomVendeur, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
     ligneVendeur = feuilleDestination.getLastRow();
   }
 
