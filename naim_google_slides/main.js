@@ -1,38 +1,15 @@
-function checkDriveActivity() {
-    var fileId = SlidesApp.getActivePresentation().getId(); 
-    var WEBHOOK = webhookUrl;
-
-    var url = `https://www.googleapis.com/drive/v3/changes?key=${apiKey}`;
-    var payload = {
-      "fileId": fileId,
-      "pageSize": 10
+function sendDiscordWebhook() {
+    const webhookURL = "https://discord.com/api/webhooks/1350547715133542400/xVVRx6cMv3tqg5ix8fBXVmeuEYxknGcYW7-AFuZAGdY7QXxqds_T8-A8STxSvuUN3l_G"; 
+    const message = {
+      content: "Quelqu'un a consulté votre Google Slides !",
+      username: "QUI A CHECK?", 
     };
   
-    var options = {
-      "method": "post",
-      "contentType": "application/json",
-      "payload": JSON.stringify(payload),
-      "muteHttpExceptions": true
+    const options = {
+      method: "post",
+      contentType: "application/json",
+      payload: JSON.stringify(message),
     };
   
-    var response = UrlFetchApp.fetch(url, options);
-    if (response.getResponseCode() !== 200) {
-        Logger.log("Error: " + response.getContentText());
-        return;
-    }
-    var activities = JSON.parse(response.getContentText()).changes;
-  
-    if (activities && activities.length > 0) {
-      var message = {
-        "content": `Quelqu'un a consulté le document : ${SlidesApp.getActivePresentation().getName()}`
-      };
-  
-      var discordOptions = {
-        "method": "post",
-        "contentType": "application/json",
-        "payload": JSON.stringify(message)
-      };
-  
-      UrlFetchApp.fetch(webhookUrl, discordOptions);
-    }
-}
+    UrlFetchApp.fetch(webhookURL, options);
+  }
