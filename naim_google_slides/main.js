@@ -1,30 +1,11 @@
-function monitorSlideAccess() {
+function monitorFileChanges() {
     try {
-      var fileId = FILEID
+      var fileId = "1Vufm81734MFZpEQj5KNGoNakVP9PsQ_soZCD9KKP5cc";
+      var file = Drive.Files.get(fileId);
+      var lastModifiedBy = file.lastModifyingUser.displayName; 
+      var lastModifiedTime = file.modifiedDate; 
   
-      if (typeof Drive === "undefined" || typeof Drive.Activities === "undefined") {
-        throw new Error("Le service Drive API n'est pas activé.");
-      }
-  
-      var activities = Drive.Activities.list(fileId, {
-        "pageSize": 10 
-      });
-  
-      if (activities.items && activities.items.length > 0) {
-        for (var i = 0; i < activities.items.length; i++) {
-          var activity = activities.items[i];
-          var eventType = activity.primaryActionDetail;
-
-          if (eventType["view"]) {
-            var user = activity.actors[0].caller.displayName; 
-            var timestamp = activity.timestamp;
-  
-            sendDiscordWebhook(user, timestamp);
-          }
-        }
-      } else {
-        Logger.log("Aucune activité trouvée.");
-      }
+      sendDiscordWebhook(lastModifiedBy, lastModifiedTime);
     } catch (e) {
       Logger.log("Erreur : " + e.toString());
     }
@@ -32,22 +13,23 @@ function monitorSlideAccess() {
   
   function sendDiscordWebhook(user, timestamp) {
     try {
-      var webhookUrl = WEBHOOK
+      var webhookUrl = "https://discord.com/api/webhooks/1350547715133542400/xVVRx6cMv3tqg5ix8fBXVmeuEYxknGcYW7-AFuZAGdY7QXxqds_T8-A8STxSvuUN3l_G"; // Remplace par ton URL de webhook Discord
+  
       var data = {
         "embeds": [
           {
-            "title": "Accès détecté à Google Slide", 
-            "description": "Un utilisateur a accédé à ton Google Slide.", 
+            "title": "Modification détectée sur Google Slide",
+            "description": "Un utilisateur a modifié ton Google Slide.", 
             "color": 16711680, 
             "fields": [ 
               {
                 "name": "Événement",
-                "value": "slide_accessed",
+                "value": "slide_modified",
                 "inline": true
               },
               {
                 "name": "Utilisateur",
-                "value": user,
+                "value": user, 
                 "inline": true
               },
               {
