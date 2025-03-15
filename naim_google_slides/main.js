@@ -1,32 +1,30 @@
-function monitorFileChanges() {
+function logAccess() {
     try {
-      var fileId = "1Vufm81734MFZpEQj5KNGoNakVP9PsQ_soZCD9KKP5cc";
-      var file = Drive.Files.get(fileId);
-      var lastModifiedBy = file.lastModifyingUser.displayName; 
-      var lastModifiedTime = file.modifiedDate; 
+      var sheetId = "1O23pTkCVgjWkAUoAsjTbDOBtCJOCoCH-y4kp539lLps";
+      var sheet = SpreadsheetApp.openById(sheetId).getActiveSheet();
+      var user = Session.getActiveUser().getUsername();
+      var timestamp = new Date().toISOString(); 
+      sheet.appendRow([user, timestamp]);
+      sendWebhook(user, timestamp);
   
-      sendDiscordWebhook(lastModifiedBy, lastModifiedTime);
+      Logger.log("Consultation enregistrée : " + user + " à " + timestamp);
     } catch (e) {
       Logger.log("Erreur : " + e.toString());
     }
   }
   
-  function sendDiscordWebhook(user, timestamp) {
+  function sendWebhook(user, timestamp) {
     try {
-      var webhookUrl = "https://discord.com/api/webhooks/1350547715133542400/xVVRx6cMv3tqg5ix8fBXVmeuEYxknGcYW7-AFuZAGdY7QXxqds_T8-A8STxSvuUN3l_G"; // Remplace par ton URL de webhook Discord
+      var webhookUrl = "https://discord.com/api/webhooks/1350547715133542400/xVVRx6cMv3tqg5ix8fBXVmeuEYxknGcYW7-AFuZAGdY7QXxqds_T8-A8STxSvuUN3l_G";
   
       var data = {
+        "content": "Nouvelle consultation détectée :",
         "embeds": [
           {
-            "title": "Modification détectée sur Google Slide",
-            "description": "Un utilisateur a modifié ton Google Slide.", 
-            "color": 16711680, 
-            "fields": [ 
-              {
-                "name": "Événement",
-                "value": "slide_modified",
-                "inline": true
-              },
+            "title": "Assistant Khalifouille - Nouvelle consultation détectée",
+            "description": "Un utilisateur a consulté ton Google Slide.",
+            "color": 16711680,
+            "fields": [
               {
                 "name": "Utilisateur",
                 "value": user, 
@@ -35,7 +33,7 @@ function monitorFileChanges() {
               {
                 "name": "Date et heure",
                 "value": timestamp, 
-                "inline": false
+                "inline": true
               }
             ]
           }
@@ -51,6 +49,6 @@ function monitorFileChanges() {
       var response = UrlFetchApp.fetch(webhookUrl, options);
       Logger.log("Réponse du webhook : " + response.getContentText());
     } catch (e) {
-      Logger.log("Erreur : " + e.toString());
+      Logger.log("Erreur (webhook) : " + e.toString());
     }
   }
