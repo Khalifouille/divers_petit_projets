@@ -70,18 +70,18 @@ function calculerIngredients() {
       stockDisponible[stockData[k][COL_STOCK_NAME]] = parseInt(stockData[k][COL_STOCK_QTY]) || 0;
     }
 
-    var manquants = "";
+    var manquants = [];
     for (var ing in ingredientsNecessaires) {
       var besoin = ingredientsNecessaires[ing];
       var dispo = stockDisponible[ing] || 0;
 
       if (besoin > dispo) {
-        manquants += "❌ " + ing + " manquant(e) : " + (besoin - dispo) + "\n";
+        manquants.push("- " + ing + " manquant(e) : " + (besoin - dispo));
       }
     }
 
-    if (manquants) {
-      Browser.msgBox("⚠️ **Ingrédients manquants :**\n\n" + manquants);
+    if (manquants.length > 0) {
+      Browser.msgBox("⚠️ **Ingrédients manquants :**\n\n" + manquants.join("\n"));
     } else {
       Browser.msgBox("✅ Tout est en stock !");
     }
