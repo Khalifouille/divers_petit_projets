@@ -24,12 +24,12 @@ function calculerIngredients() {
       throw new Error("Assure-toi que les feuilles contiennent des données.");
     }
 
-    var menusDisponibles = menuData.slice(1).map(row => row[COL_MENU_NAME].replace(/[\u{1F300}-\u{1FAD6}]/gu, "").trim());
+    var menusDisponibles = menuData.slice(1).map(row => row[COL_MENU_NAME].replace(/[\u{1F300}-\u{1FAD6}]/gu, "").trim().toLowerCase());
 
     var choixMenus = Browser.inputBox("Quels menus veux-tu préparer ?\n" + menusDisponibles.join("\n"), Browser.Buttons.OK_CANCEL);
     if (choixMenus == "cancel") return;
 
-    var menusChoisis = choixMenus.split(",").map(m => m.trim());
+    var menusChoisis = choixMenus.split(",").map(m => m.trim().toLowerCase());
     var quantitesMenus = {};
 
     for (var menu of menusChoisis) {
@@ -47,7 +47,7 @@ function calculerIngredients() {
     var ingredientsNecessaires = {};
 
     for (var j = 1; j < menuData.length; j++) {
-      var menuNom = menuData[j][COL_MENU_NAME].replace(/[\u{1F300}-\u{1FAD6}]/gu, "").trim();
+      var menuNom = menuData[j][COL_MENU_NAME].replace(/[\u{1F300}-\u{1FAD6}]/gu, "").trim().toLowerCase();
       var quantiteMenu = quantitesMenus[menuNom] || 0;
 
       if (quantiteMenu > 0) {
@@ -69,13 +69,13 @@ function calculerIngredients() {
 
     var stockDisponible = {};
     for (var k = 1; k < stockData.length; k++) {
-      stockDisponible[stockData[k][COL_STOCK_NAME]] = parseInt(stockData[k][COL_STOCK_QTY]) || 0;
+      stockDisponible[stockData[k][COL_STOCK_NAME].toLowerCase()] = parseInt(stockData[k][COL_STOCK_QTY]) || 0;
     }
 
     var manquants = [];
     for (var ing in ingredientsNecessaires) {
       var besoin = ingredientsNecessaires[ing];
-      var dispo = stockDisponible[ing] || 0;
+      var dispo = stockDisponible[ing.toLowerCase()] || 0;
 
       if (besoin > dispo) {
         manquants.push("- " + ing + " manquant(e) : " + (besoin - dispo));
