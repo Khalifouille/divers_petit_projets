@@ -26,7 +26,7 @@ function calculerIngredients() {
 
     var menusDisponibles = menuData.slice(1).map(row => row[COL_MENU_NAME].replace(/[\u{1F300}-\u{1FAD6}]/gu, "").trim().toLowerCase());
 
-    var choixMenus = Browser.inputBox("Quels menus veux-tu préparer ?\n" + menusDisponibles.join("\n"), Browser.Buttons.OK_CANCEL);
+    var choixMenus = Browser.inputBox("Quel menu veux-tu préparer ?", Browser.Buttons.OK_CANCEL);
     if (choixMenus == "cancel") return;
 
     var menusChoisis = choixMenus.split(",").map(m => m.trim().toLowerCase());
