@@ -1,3 +1,5 @@
+// Script de calcul de quantité/menu pour BS NORD - NOFACE (@Khalifouille)
+
 function calculerIngredients() {
   const SHEET_MENUS = "🛒 Recettes";
   const SHEET_STOCK = "📦Stock";
