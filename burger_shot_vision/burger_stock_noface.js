@@ -81,12 +81,13 @@ function calculerIngredients() {
     }
 
     if (manquants.length > 0) {
-      Browser.msgBox("⚠️ **Ingrédients manquants :**\n\n" + manquants.join("\n"));
+      var message = "⚠️ **Ingrédients manquants :**\n\n" + manquants.join("\n");
+      SpreadsheetApp.getUi().alert(message);
     } else {
-      Browser.msgBox("✅ Tout est en stock !");
+      SpreadsheetApp.getUi().alert("✅ Tout est en stock !");
     }
 
   } catch (e) {
-    Browser.msgBox("Erreur : " + e.message);
+    SpreadsheetApp.getUi().alert("Erreur : " + e.message);
   }
 }
