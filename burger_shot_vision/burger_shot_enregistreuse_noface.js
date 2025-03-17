@@ -118,35 +118,38 @@ function mettreAJourVentes() {
   SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour dans la feuille : " + nomFeuille + " et enregistrées dans le rapport des ventes.");
 }
 
-function envoyerNotificationDiscord(nomVendeur, article, quantite, total) {
+function envoyerNotificationDiscord(nomVendeur, totaux) {
   const webhookURL = "https://discord.com/api/webhooks/1341426672225878027/AwfUXS9gwrkMESCT8tz2JeQqX8e0O2GitOAIpb8fsunTqjyFfZgkSpmNWfhP21z-gQmJ";
-
+  const prixTotal = (totaux.get("Menu Classic") * 100) + (totaux.get("Menu Double") * 120);
   const message = {
     content: null,
     embeds: [
       {
-        title: "Nouvelle vente enregistrée !",
+        title: "Nouvelle vente [CIVILS]",
         color: 0x00ff00, 
         fields: [
           {
             name: "Vendeur",
             value: nomVendeur,
-            inline: true
+            inline: false
           },
           {
-            name: "Article",
-            value: article,
-            inline: true
+            name: "Date et heure",
+            value: new Date().toLocaleString("fr-FR"),
+            inline: false
           },
           {
-            name: "Quantité",
-            value: quantite.toString(),
-            inline: true
+            name: "Détails de la vente",
+            value: Object.entries(totaux)
+              .filter(([article, quantite]) => quantite > 0)
+              .map(([article, quantite]) => `- ${article} : ${quantite}`)
+              .join("\n"),
+            inline: false
           },
           {
-            name: "Total",
-            value: total.toString(),
-            inline: true
+            name: "Prix total",
+            value: `${prixTotal} $`,
+            inline: false
           }
         ],
         timestamp: new Date().toISOString()
