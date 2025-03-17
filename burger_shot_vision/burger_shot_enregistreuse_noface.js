@@ -157,10 +157,12 @@ function envoyerNotificationDiscord(nomVendeur, article, quantite, total) {
   const options = {
     method: "post",
     contentType: "application/json",
-    payload: JSON.stringify(message)
+    payload: JSON.stringify(message),
+    muteHttpExceptions: true
   };
 
-  UrlFetchApp.fetch(webhookURL, options);
+  const response = UrlFetchApp.fetch(webhookURL, options);
+  Logger.log("Réponse du serveur Discord : " + response.getContentText());
 }
 
 function formatDate(date) {
