@@ -9,73 +9,72 @@ function calculerIngredients() {
   const COL_STOCK_QTY = 1; // Colonne B
 
   try {
-    var ss = SpreadsheetApp.getActiveSpreadsheet();
-    var menuSheet = ss.getSheetByName(SHEET_MENUS);
-    var stockSheet = ss.getSheetByName(SHEET_STOCK);
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const menuSheet = ss.getSheetByName(SHEET_MENUS);
+    const stockSheet = ss.getSheetByName(SHEET_STOCK);
 
     if (!menuSheet || !stockSheet) {
       throw new Error("Vérifie que les feuilles '🛒 Recettes' et '📦Stock' existent.");
     }
 
-    var menuData = menuSheet.getDataRange().getValues();
-    var stockData = stockSheet.getDataRange().getValues();
+    const menuData = menuSheet.getDataRange().getValues();
+    const stockData = stockSheet.getDataRange().getValues();
 
     if (menuData.length < 2 || stockData.length < 2) {
       throw new Error("Assure-toi que les feuilles contiennent des données.");
     }
 
-    var menusDisponibles = menuData.slice(1).map(row => row[COL_MENU_NAME].replace(/[\u{1F300}-\u{1FAD6}]/gu, "").trim().toLowerCase());
+    const menusDisponibles = new Set(menuData.slice(1).map(row => row[COL_MENU_NAME].replace(/[\u{1F300}-\u{1FAD6}]/gu, "").trim().toLowerCase()));
 
-    var choixMenus = Browser.inputBox("Quel menu veux-tu préparer ?", Browser.Buttons.OK_CANCEL);
-    if (choixMenus == "cancel") return;
+    const choixMenus = Browser.inputBox("Quelle recette veux-tu préparer ?", Browser.Buttons.OK_CANCEL);
+    if (choixMenus === "cancel") return;
 
-    var menusChoisis = choixMenus.split(",").map(m => m.trim().toLowerCase());
-    var quantitesMenus = {};
+    const menusChoisis = choixMenus.split(",").map(m => m.trim().toLowerCase());
+    const quantitesMenus = new Map();
 
-    for (var menu of menusChoisis) {
-      if (!menusDisponibles.includes(menu)) {
+    for (const menu of menusChoisis) {
+      if (!menusDisponibles.has(menu)) {
         throw new Error("Menu '" + menu + "' non trouvé. Vérifie l'orthographe.");
       }
-      var quantite = Browser.inputBox("Combien de '" + menu + "' veux-tu préparer ?", Browser.Buttons.OK_CANCEL);
-      if (quantite == "cancel") return;
+      const quantite = Browser.inputBox("Combien de '" + menu + "' veux-tu préparer ?", Browser.Buttons.OK_CANCEL);
+      if (quantite === "cancel") return;
       if (isNaN(quantite) || quantite <= 0) {
         throw new Error("Nombre invalide pour " + menu);
       }
-      quantitesMenus[menu] = parseInt(quantite);
+      quantitesMenus.set(menu, parseInt(quantite));
     }
 
-    var ingredientsNecessaires = {};
+    const ingredientsNecessaires = new Map();
 
-    for (var j = 1; j < menuData.length; j++) {
-      var menuNom = menuData[j][COL_MENU_NAME].replace(/[\u{1F300}-\u{1FAD6}]/gu, "").trim().toLowerCase();
-      var quantiteMenu = quantitesMenus[menuNom] || 0;
+    for (let j = 1; j < menuData.length; j++) {
+      const menuNom = menuData[j][COL_MENU_NAME].replace(/[\u{1F300}-\u{1FAD6}]/gu, "").trim().toLowerCase();
+      const quantiteMenu = quantitesMenus.get(menuNom) || 0;
 
       if (quantiteMenu > 0) {
-        var ingredients = menuData[j][COL_INGREDIENTS].split(", ");
-        for (var ing of ingredients) {
-          var parts = ing.match(/x(\d+) (.+)/);
+        const ingredients = menuData[j][COL_INGREDIENTS].split(", ");
+        for (const ing of ingredients) {
+          const parts = ing.match(/x(\d+) (.+)/);
           if (!parts || parts.length < 3) continue;
 
-          var quantite = parseInt(parts[1]);
-          var ingredient = parts[2].trim();
+          const quantite = parseInt(parts[1]);
+          const ingredient = parts[2].trim();
 
-          if (!ingredientsNecessaires[ingredient]) {
-            ingredientsNecessaires[ingredient] = 0;
+          if (!ingredientsNecessaires.has(ingredient)) {
+            ingredientsNecessaires.set(ingredient, 0);
           }
-          ingredientsNecessaires[ingredient] += quantite * quantiteMenu;
+          ingredientsNecessaires.set(ingredient, ingredientsNecessaires.get(ingredient) + quantite * quantiteMenu);
         }
       }
     }
 
-    var stockDisponible = {};
-    for (var k = 1; k < stockData.length; k++) {
-      stockDisponible[stockData[k][COL_STOCK_NAME].toLowerCase()] = parseInt(stockData[k][COL_STOCK_QTY]) || 0;
+    const stockDisponible = new Map();
+    for (let k = 1; k < stockData.length; k++) {
+      stockDisponible.set(stockData[k][COL_STOCK_NAME].toLowerCase(), parseInt(stockData[k][COL_STOCK_QTY]) || 0);
     }
 
-    var manquants = [];
-    for (var ing in ingredientsNecessaires) {
-      var besoin = ingredientsNecessaires[ing];
-      var dispo = stockDisponible[ing.toLowerCase()] || 0;
+    const manquants = [];
+    for (const [ing, besoin] of ingredientsNecessaires) {
+      const dispo = stockDisponible.get(ing.toLowerCase()) || 0;
 
       if (besoin > dispo) {
         manquants.push("- " + ing + " manquant(e) : " + (besoin - dispo));
@@ -83,7 +82,7 @@ function calculerIngredients() {
     }
 
     if (manquants.length > 0) {
-      var message = "⚠️ **Ingrédients manquants :**\n\n" + manquants.join("\n");
+      const message = "⚠️ **Ingrédients manquants :**\n\n" + manquants.join("\n");
       SpreadsheetApp.getUi().alert(message);
     } else {
       SpreadsheetApp.getUi().alert("✅ Tout est en stock !");
