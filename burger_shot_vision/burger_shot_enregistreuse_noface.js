@@ -103,16 +103,31 @@ function mettreAJourVentes() {
 
   if (!feuilleRapport) {
     feuilleRapport = SpreadsheetApp.getActiveSpreadsheet().insertSheet(nomFeuilleRapport);
-    feuilleRapport.appendRow(["Date", "Vendeur", "Article", "Quantité"]);
+    feuilleRapport.appendRow(["Date", "Vendeur", "Menu Classic", "Menu Double", "Menu Contrat"]);
   }
 
-  data.forEach(row => {
-    let article = row[0] ? row[0].toString().trim() : "";
-    let quantite = row[1] ? parseFloat(row[1]) : 0;
-    if (article && !isNaN(quantite)) {
-      feuilleRapport.appendRow([formatDate(aujourdHui), nomVendeur, article, quantite]);
+  const dateAujourdHui = formatDate(aujourdHui);
+  const dataRapport = feuilleRapport.getRange('A2:E').getValues();
+  let ligneExistante = -1;
+
+  for (let i = 0; i < dataRapport.length; i++) {
+    if (dataRapport[i][0] === dateAujourdHui && dataRapport[i][1] === nomVendeur) {
+      ligneExistante = i + 2;
+      break;
     }
-  });
+  }
+
+  if (ligneExistante === -1) {
+    feuilleRapport.appendRow([dateAujourdHui, nomVendeur, totaux["Menu Classic"], totaux["Menu Double"], totaux["Menu Contrat"]]);
+  } else {
+    const valeursActuellesRapport = feuilleRapport.getRange(ligneExistante, 3, 1, 3).getValues()[0];
+    const nouveauxTotauxRapport = [
+      valeursActuellesRapport[0] + totaux["Menu Classic"],
+      valeursActuellesRapport[1] + totaux["Menu Double"],
+      valeursActuellesRapport[2] + totaux["Menu Contrat"]
+    ];
+    feuilleRapport.getRange(ligneExistante, 3, 1, 3).setValues([nouveauxTotauxRapport]);
+  }
 
   SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour dans la feuille : " + nomFeuille + " et enregistrées dans le rapport des ventes.");
 }
