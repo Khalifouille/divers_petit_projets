@@ -36,8 +36,6 @@ function mettreAJourVentes() {
       if (nomArticle && colonnesDestination.includes(nomArticle)) {
         totaux.set(nomArticle, totaux.get(nomArticle) + quantite);
         Logger.log("✅ Ajouté à " + nomArticle + " => Total maintenant : " + totaux.get(nomArticle));
-
-        envoyerNotificationDiscord(nomVendeur, nomArticle, quantite, totaux.get(nomArticle));
       } else {
         Logger.log("⚠️ Article ignoré ou non reconnu : " + article);
       }
@@ -115,18 +113,24 @@ function mettreAJourVentes() {
     feuilleRapport.getRange(ligneExistante, 3, 1, 7).setValues([nouveauxTotauxRapport]);
   }
 
-  SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour dans la feuille : " + nomFeuille + " et enregistrées dans le rapport des ventes.");
+  envoyerNotificationDiscord(nomVendeur, totaux);
+
+  SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour !");
 }
 
 function envoyerNotificationDiscord(nomVendeur, totaux) {
   const webhookURL = "https://discord.com/api/webhooks/1341426672225878027/AwfUXS9gwrkMESCT8tz2JeQqX8e0O2GitOAIpb8fsunTqjyFfZgkSpmNWfhP21z-gQmJ";
-  const prixTotal = (totaux.get("Menu Classic") * 100) + (totaux.get("Menu Double") * 120);
+
+  const totauxObj = Object.fromEntries(totaux);
+
+  const prixTotal = (totauxObj["Menu Classic"] * 100) + (totauxObj["Menu Double"] * 120) + (totauxObj["Tenders"] * 60) + (totauxObj["Petite Salade"] * 60) + (totauxObj["Boisson"] * 30 + (totauxObj["Milkshake"] * 40) + (totauxObj["Menu Contrat"] * 0));
+
   const message = {
     content: null,
     embeds: [
       {
         title: "Nouvelle vente [CIVILS]",
-        color: 0x00ff00, 
+        color: 0x00ff00,
         fields: [
           {
             name: "Vendeur",
@@ -140,10 +144,10 @@ function envoyerNotificationDiscord(nomVendeur, totaux) {
           },
           {
             name: "Détails de la vente",
-            value: Object.entries(totaux)
-              .filter(([article, quantite]) => quantite > 0)
+            value: Object.entries(totauxObj)
+              .filter(([article, quantite]) => quantite > 0) 
               .map(([article, quantite]) => `- ${article} : ${quantite}`)
-              .join("\n"),
+              .join("\n"), 
             inline: false
           },
           {
