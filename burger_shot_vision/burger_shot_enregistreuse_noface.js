@@ -31,7 +31,7 @@ function mettreAJourVentes() {
 
     Logger.log("🔸 Article détecté : " + article + " | Quantité détectée : " + quantite);
 
-    if (article && !isNaN(quantite)) {
+    if (article && !isNaN(quantite) && quantite > 0) {
       const nomArticle = mappingArticles.get(article);
       if (nomArticle && colonnesDestination.includes(nomArticle)) {
         totaux.set(nomArticle, totaux.get(nomArticle) + quantite);
@@ -126,7 +126,7 @@ function envoyerNotificationDiscord(nomVendeur, article, quantite, total) {
     embeds: [
       {
         title: "Nouvelle vente enregistrée !",
-        color: 0x00ff00,
+        color: 0x00ff00, 
         fields: [
           {
             name: "Vendeur",
