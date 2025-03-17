@@ -103,11 +103,11 @@ function mettreAJourVentes() {
 
   if (!feuilleRapport) {
     feuilleRapport = SpreadsheetApp.getActiveSpreadsheet().insertSheet(nomFeuilleRapport);
-    feuilleRapport.appendRow(["Date", "Vendeur", "Menu Classic", "Menu Double", "Menu Contrat"]);
+    feuilleRapport.appendRow(["Date", "Vendeur", "Menu Classic", "Menu Double", "Menu Contrat", "Tenders", "Petite Salade", "Boisson", "MilkShake"]);
   }
 
   const dateAujourdHui = formatDate(aujourdHui);
-  const dataRapport = feuilleRapport.getRange('A2:E').getValues();
+  const dataRapport = feuilleRapport.getRange('A2:I').getValues();
   let ligneExistante = -1;
 
   for (let i = 0; i < dataRapport.length; i++) {
@@ -118,15 +118,29 @@ function mettreAJourVentes() {
   }
 
   if (ligneExistante === -1) {
-    feuilleRapport.appendRow([dateAujourdHui, nomVendeur, totaux["Menu Classic"], totaux["Menu Double"], totaux["Menu Contrat"]]);
+    feuilleRapport.appendRow([
+      dateAujourdHui,
+      nomVendeur,
+      totaux["Menu Classic"],
+      totaux["Menu Double"],
+      totaux["Menu Contrat"],
+      totaux["Tenders"],
+      totaux["Petite Salade"],
+      totaux["Boisson"],
+      totaux["MilkShake"]
+    ]);
   } else {
-    const valeursActuellesRapport = feuilleRapport.getRange(ligneExistante, 3, 1, 3).getValues()[0];
+    const valeursActuellesRapport = feuilleRapport.getRange(ligneExistante, 3, 1, 7).getValues()[0];
     const nouveauxTotauxRapport = [
       valeursActuellesRapport[0] + totaux["Menu Classic"],
       valeursActuellesRapport[1] + totaux["Menu Double"],
-      valeursActuellesRapport[2] + totaux["Menu Contrat"]
+      valeursActuellesRapport[2] + totaux["Menu Contrat"],
+      valeursActuellesRapport[3] + totaux["Tenders"],
+      valeursActuellesRapport[4] + totaux["Petite Salade"],
+      valeursActuellesRapport[5] + totaux["Boisson"],
+      valeursActuellesRapport[6] + totaux["MilkShake"]
     ];
-    feuilleRapport.getRange(ligneExistante, 3, 1, 3).setValues([nouveauxTotauxRapport]);
+    feuilleRapport.getRange(ligneExistante, 3, 1, 7).setValues([nouveauxTotauxRapport]);
   }
 
   SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour dans la feuille : " + nomFeuille + " et enregistrées dans le rapport des ventes.");
