@@ -36,6 +36,8 @@ function mettreAJourVentes() {
       if (nomArticle && colonnesDestination.includes(nomArticle)) {
         totaux.set(nomArticle, totaux.get(nomArticle) + quantite);
         Logger.log("✅ Ajouté à " + nomArticle + " => Total maintenant : " + totaux.get(nomArticle));
+
+        envoyerNotificationDiscord(nomVendeur, nomArticle, quantite, totaux.get(nomArticle));
       } else {
         Logger.log("⚠️ Article ignoré ou non reconnu : " + article);
       }
@@ -114,6 +116,51 @@ function mettreAJourVentes() {
   }
 
   SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour dans la feuille : " + nomFeuille + " et enregistrées dans le rapport des ventes.");
+}
+
+function envoyerNotificationDiscord(nomVendeur, article, quantite, total) {
+  const webhookURL = "https://discord.com/api/webhooks/1341426672225878027/AwfUXS9gwrkMESCT8tz2JeQqX8e0O2GitOAIpb8fsunTqjyFfZgkSpmNWfhP21z-gQmJ";
+
+  const message = {
+    content: null,
+    embeds: [
+      {
+        title: "Nouvelle vente enregistrée !",
+        color: 0x00ff00,
+        fields: [
+          {
+            name: "Vendeur",
+            value: nomVendeur,
+            inline: true
+          },
+          {
+            name: "Article",
+            value: article,
+            inline: true
+          },
+          {
+            name: "Quantité",
+            value: quantite.toString(),
+            inline: true
+          },
+          {
+            name: "Total",
+            value: total.toString(),
+            inline: true
+          }
+        ],
+        timestamp: new Date().toISOString()
+      }
+    ]
+  };
+
+  const options = {
+    method: "post",
+    contentType: "application/json",
+    payload: JSON.stringify(message)
+  };
+
+  UrlFetchApp.fetch(webhookURL, options);
 }
 
 function formatDate(date) {
