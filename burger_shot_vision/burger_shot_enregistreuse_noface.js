@@ -101,7 +101,23 @@ function mettreAJourVentes() {
   feuilleActive.getRange('D13:D').clearContent(); 
   Logger.log("🧹 Quantités effacées dans la plage C13:D");
 
-  SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour dans la feuille : " + nomFeuille);
+  const nomFeuilleRapport = "Rapport des Ventes";
+  let feuilleRapport = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nomFeuilleRapport);
+
+  if (!feuilleRapport) {
+    feuilleRapport = SpreadsheetApp.getActiveSpreadsheet().insertSheet(nomFeuilleRapport);
+    feuilleRapport.appendRow(["Date", "Vendeur", "Article", "Quantité"]);
+  }
+
+  data.forEach(row => {
+    let article = row[0] ? row[0].toString().trim() : "";
+    let quantite = row[1] ? parseFloat(row[1]) : 0;
+    if (article && !isNaN(quantite)) {
+      feuilleRapport.appendRow([formatDate(aujourdHui), nomVendeur, article, quantite]);
+    }
+  });
+
+  SpreadsheetApp.getUi().alert("Les ventes de " + nomVendeur + " ont été mises à jour dans la feuille : " + nomFeuille + " et enregistrées dans le rapport des ventes.");
 }
 
 function formatDate(date) {
