@@ -123,7 +123,7 @@ function envoyerNotificationDiscord(nomVendeur, totaux) {
 
   const totauxObj = Object.fromEntries(totaux);
 
-  const prixTotal = (totauxObj["Menu Classic"] * 100) + (totauxObj["Menu Double"] * 120) + (totauxObj["Tenders"] * 60) + (totauxObj["Petite Salade"] * 60) + (totauxObj["Boisson"] * 30 + (totauxObj["Milkshake"] * 40) + (totauxObj["Menu Contrat"] * 0));
+  const prixTotal = (totauxObj["Menu Classic"] * 100) + (totauxObj["Menu Double"] * 120) + (totauxObj["Tenders"] * 60) + (totauxObj["Petite Salade"] * 60) + (totauxObj["Boisson"] * 30) + (totauxObj["MilkShake"] * 40) + (totauxObj["Menu Contrat"] * 0);
 
   const message = {
     content: null,
