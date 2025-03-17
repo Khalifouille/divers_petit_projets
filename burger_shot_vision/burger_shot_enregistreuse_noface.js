@@ -1,6 +1,3 @@
-// FEUILLLE DE CALCUL : https://docs.google.com/spreadsheets/d/1I3kV3VnvaqblWgyh_oDlwz39jXAjVXOHUOTTmn2033Y/edit?usp=sharing
-// Script d'enregistreuse de ventes pour BS NORD - NOFACE (@Khalifouille)
-
 function mettreAJourVentes() {
   const feuilleActive = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
   const nomVendeur = feuilleActive.getRange('L3').getValue();
@@ -101,7 +98,7 @@ function mettreAJourVentes() {
   feuilleActive.getRange('D13:D').clearContent(); 
   Logger.log("🧹 Quantités effacées dans la plage C13:D");
 
-  const nomFeuilleRapport = "Rapport des Ventes";
+  const nomFeuilleRapport = "📚Rapport des Ventes";
   let feuilleRapport = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(nomFeuilleRapport);
 
   if (!feuilleRapport) {
