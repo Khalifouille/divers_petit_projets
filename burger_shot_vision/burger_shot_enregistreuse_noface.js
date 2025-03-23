@@ -119,7 +119,7 @@ function mettreAJourVentes() {
 }
 
 function envoyerNotificationDiscord(nomVendeur, totaux) {
-  const webhookURL = "https://discord.com/api/webhooks/1341426672225878027/AwfUXS9gwrkMESCT8tz2JeQqX8e0O2GitOAIpb8fsunTqjyFfZgkSpmNWfhP21z-gQmJ";
+  const webhookURL = "https://discord.com/api/webhooks/webhook";
 
   const totauxObj = Object.fromEntries(totaux);
 
@@ -129,7 +129,7 @@ function envoyerNotificationDiscord(nomVendeur, totaux) {
     content: null,
     embeds: [
       {
-        title: "Nouvelle vente [CIVILS]",
+        title: "🟢 Nouvelle vente",
         color: 0x00ff00,
         fields: [
           {
@@ -156,6 +156,12 @@ function envoyerNotificationDiscord(nomVendeur, totaux) {
             inline: false
           }
         ],
+        image: {
+          url: "https://zupimages.net/up/25/13/epcr.jpg"
+        },
+        footer: {
+          text: "Système de gestion des ventes"
+        },
         timestamp: new Date().toISOString()
       }
     ]
