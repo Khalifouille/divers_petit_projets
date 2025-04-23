@@ -6,6 +6,17 @@ import asyncio
 import requests
 from bs4 import BeautifulSoup
 import re
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('bot.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 intents = discord.Intents.default()
 intents.members = True
@@ -17,7 +28,12 @@ intents.message_content = True
 bot = commands.Bot(command_prefix="!", intents=intents)
 
 last_number = 0
-
+CONFIG = {
+    'api_key': '//', 
+    'fortnite_api_url': 'https://fortnite-api.com/v2/stats/br/v2',
+    'allowed_guild_id': 894541937464463412,
+    'target_channel_id': 1036578555624165476
+}
 
 def load_last_number():
     try:
@@ -27,325 +43,297 @@ def load_last_number():
     except (FileNotFoundError, json.JSONDecodeError):
         return 0
 
-
 def save_last_number():
-    data = {'last_number': last_number}
     with open('last_number.json', 'w') as file:
-        json.dump(data, file)
+        json.dump({'last_number': last_number}, file)
 
+async def send_embed(ctx, title, description, color=0x8B0000, fields=None, footer=None):
+    embed = discord.Embed(title=title, description=description, color=color)
+    if fields:
+        for name, value, inline in fields:
+            embed.add_field(name=name, value=value, inline=inline)
+    if footer:
+        embed.set_footer(text=footer, icon_url=ctx.author.avatar.url)
+    await ctx.send(embed=embed)
 
 @bot.event
 async def on_ready():
     activity = discord.Game(name="Demande à Khali")
     await bot.change_presence(status=discord.Status.do_not_disturb, activity=activity)
-    print(f'Salut mon gars {bot.user.name}')
-    print(f'Logged in as {bot.user.name} (ID: {bot.user.id})')
-    print('------')
-    print('Connected to the following guilds:')
+    
+    logger.info(f'Connecté en tant que {bot.user.name} (ID: {bot.user.id})')
+    logger.info('------')
+    logger.info('Serveurs connectés:')
+    
     for guild in bot.guilds:
-        print(f'- {guild.name} (ID: {guild.id})')
-        print('  Channels:')
-        for channel in guild.channels:
-            print(f'    - {channel.name} (ID: {channel.id})')
-    '''channel = bot.get_channel(926198709895725076)
-    if channel is not None:
-        await channel.send("@everyone libérez Khalifouille")
-    else:
-        print("Channel not found")'''
+        logger.info(f'- {guild.name} (ID: {guild.id})')
+    
     global last_number
     last_number = load_last_number()
 
-
 @bot.event
 async def on_message(message):
-    global last_number
     if message.author == bot.user:
         return
 
     await bot.process_commands(message)
 
-    if message.guild and message.guild.id == 894541937464463412:
+    if message.guild and message.guild.id == CONFIG['allowed_guild_id']:
         if message.content.isdigit():
+            global last_number
             new_number = int(message.content)
             if new_number > last_number:
                 last_number = new_number
-                print(f"Nouveau nombre : {new_number}")
-                await message.channel.edit(topic=f"Best score les loulous : {str(new_number)}")
+                logger.info(f"Nouveau meilleur score : {new_number}")
+                await message.channel.edit(topic=f"Best score les loulous : {new_number}")
                 save_last_number()
+
+    if message.channel.id == CONFIG['target_channel_id'] and message.content.isdigit():
+        discord_id = message.content
+        await message.channel.send(f"{discord_id} - <@{discord_id}>")
+    
+    await message.delete()
 
 @bot.command(name='stats')
 async def stats(ctx, *, pseudo):
-    account_type = "epic"
+    try:
+        headers = {"Authorization": CONFIG['api_key']}
+        params = {"name": pseudo, "accountType": "epic"}
+        
+        response = requests.get(CONFIG['fortnite_api_url'], headers=headers, params=params)
+        response.raise_for_status()
+        data = response.json()
 
-    headers = {
-        "Authorization": api_key
-    }
+        if 'error' in data:
+            await ctx.send(f"Erreur : {data['error']['message']}")
+            return
 
-    params = {
-        "name": pseudo,
-        "accountType": account_type,
-    }
-
-    response = requests.get(url, params=params, headers=headers)
-    data = response.json()
-
-    if 'error' in data:
-        await ctx.send(f"Erreur : {data['error']['message']}")
-        return
-
-    overall_stats = data['data']['stats']['all']['overall']
-    kd_ratio = overall_stats['kd']
-    top1 = overall_stats['wins']
-    kills = overall_stats['kills']
-
-    response_message = (
-        f"__**\n- Statistiques de {pseudo} : **__\n"
-        f"**\n:skull: - Kills :** {kills}\n"
-        f"**\n:bar_chart: - K/D :** {kd_ratio}\n"
-        f"**\n:trophy: - TOP1 :** {top1}"
-    )
-
-    await ctx.send(response_message)
-
+        stats = data['data']['stats']['all']['overall']
+        fields = [
+            (":skull: Kills", str(stats['kills']), False),
+            (":bar_chart: K/D", str(stats['kd']), False),
+            (":trophy: TOP1", str(stats['wins']), False)
+        ]
+        
+        await send_embed(
+            ctx,
+            f"Statistiques de {pseudo}",
+            "",
+            fields=fields
+        )
+    except Exception as e:
+        logger.error(f"Erreur dans la commande stats: {e}")
+        await ctx.send("Une erreur s'est produite lors de la récupération des statistiques.")
 
 @stats.error
 async def stats_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send("Il faut écrire comme suit : `!stats [INSEREZ UN PSEUDO FORTNITE EPIC]`")
-
+        await ctx.send("Usage: `!stats [PSEUDO_FORTNITE_EPIC]`")
 
 @bot.command(name='news')
 async def news(ctx):
-    url_news = "https://fortnite-api.com/v2/news/br?language=fr"
+    try:
+        response = requests.get("https://fortnite-api.com/v2/news/br?language=fr")
+        response.raise_for_status()
+        data = response.json()
 
-    response = requests.get(url_news)
-    data = response.json()
+        news_list = data.get('data', {}).get('motds', [])
+        if not news_list:
+            await ctx.send("Aucune actualité disponible.")
+            return
 
-    if 'error' in data:
-        await ctx.send(f"Erreur : {data['error']['message']}")
-        return
+        date_str = data['data'].get('date', 'N/A')
+        news_date = datetime.strptime(date_str, "%Y-%m-%dT%H:%M:%SZ").strftime("%Y-%m-%d")
+        
+        embed = discord.Embed(color=0x8B0000)
+        embed.set_author(name=f"Actualités Fortnite - {news_date}", icon_url=ctx.author.avatar.url)
 
-    news_list = data.get('data', {}).get('motds', [])
+        for news_item in news_list:
+            title = news_item.get('title', 'N/A')
+            body = news_item.get('body', 'N/A')
+            embed.add_field(name=f"• {title}", value=body, inline=False)
 
-    if not news_list:
-        await ctx.send("Aucune actualité disponible.")
-        return
-
-    full_date_str = data['data'].get('date', 'N/A')
-    full_date = datetime.strptime(full_date_str, "%Y-%m-%dT%H:%M:%SZ")
-    date = full_date.strftime("%Y-%m-%d")
-
-    embed = discord.Embed(color=0x8B0000)
-
-    embed.set_author(name=f"DATE DES NEWS : {date}", icon_url=ctx.author.avatar.url)
-
-    for news_item in news_list:
-        fortnews = news_item.get('title', 'N/A')
-        forttextnews = news_item.get('body', 'N/A')
-
-        embed.add_field(name=f"• {fortnews}", value=f"{forttextnews}\n\n\n\n", inline=False)
-
-    await ctx.send(embed=embed)
+        await ctx.send(embed=embed)
+    except Exception as e:
+        logger.error(f"Erreur dans la commande news: {e}")
+        await ctx.send("Une erreur s'est produite lors de la récupération des actualités.")
 
 @bot.command(name='trad')
 async def trad(ctx, *, mot):
-    mot = mot.replace(' ', '-')
-    mot = mot.replace("’", '')
-    mot = mot.replace("ç", 'c')
-    mot = mot.replace("é", 'e')
-    mot = mot.replace("è", 'e')
-
-    url = f"https://tajinequiparle.com/francais-arabe-marocain/{mot}/"
-
-    response = requests.get(url)
-
-    print(url)
-
-    if response.status_code == 200:
+    try:
+        mot = re.sub(r"[ ’'çéè]", lambda m: {' ':'-', '’':'', "'":'', 'ç':'c', 'é':'e', 'è':'e'}[m.group()], mot.lower())
+        url = f"https://tajinequiparle.com/francais-arabe-marocain/{mot}/"
+        
+        response = requests.get(url)
+        response.raise_for_status()
+        
         soup = BeautifulSoup(response.text, 'html.parser')
-        element_cible = soup.find('q')
-
-        if element_cible:
-            await ctx.send(f"Traduction de {mot} en :flag_ma: est : **{element_cible.get_text()}**")
-            await ctx.send("اللعنة على إسرائيل")
+        translation = soup.find('q')
+        
+        if translation:
+            await ctx.send(f"Traduction de {mot} en :flag_ma: : **{translation.get_text()}**")
         else:
-            await ctx.send("L'élément spécifié n'a pas été trouvé.")
-    else:
-        await ctx.send(f"La requête a échoué avec le code d'état {response.status_code}")
+            await ctx.send("Traduction non trouvée.")
+    except Exception as e:
+        logger.error(f"Erreur dans la commande trad: {e}")
+        await ctx.send("Une erreur s'est produite lors de la traduction.")
 
 @bot.command(name="vision")
 async def vision(ctx):
-    url_news = "https://steamcommunity.com/id/larabe12/"
-
-    response = requests.get(url_news)
-
-    if response.status_code == 200:
+    try:
+        response = requests.get("https://steamcommunity.com/id/larabe12/")
+        response.raise_for_status()
+        
         soup = BeautifulSoup(response.text, 'html.parser')
+        recent_games = soup.find('div', class_='recent_games')
+        
+        if not recent_games:
+            await ctx.send("Impossible de récupérer les informations de jeu.")
+            return
 
-        recent_games_div = soup.find('div', class_='recent_games')
-
-        new_divs = recent_games_div.find_all('div', class_='recent_game')
-
-        for index, recent_game_div in enumerate(new_divs):
-            if recent_game_div.find('div', class_='game_name').text.strip() == "Source SDK Base 2007":
-                game_info_details_div = recent_game_div.find('div', class_='game_info_details')
-
-                hours_pattern = re.compile(r'(\d+)\s*hrs on record')
-                match = hours_pattern.search(game_info_details_div.text)
-
+        for game in recent_games.find_all('div', class_='recent_game'):
+            if game.find('div', class_='game_name').text.strip() == "Source SDK Base 2007":
+                details = game.find('div', class_='game_info_details')
+                match = re.search(r'(\d+)\s*hrs on record', details.text)
+                
                 if match:
                     heures_fivem = int(match.group(1))
-
-                    heures_whitelist = 800 - heures_fivem
-
-                    if heures_whitelist <= 24 and heures_whitelist > 0:
-                        await ctx.send(f"Il reste que {heures_whitelist}, bientôt le rôleplay ! Tic Tac Tic Tac")
-                        print(ctx.channel.topic)
-                        await ctx.channel.edit(topic="VPS fournit par : 🇯 🇪  -  🇫 🇮 🇱 🇲 🇪  -  🇱 🇪  -  🇲 🇦 🇹 🇨 🇭 - ❤️ !")
-                        print(ctx.channel.topic)
-
-                    elif heures_whitelist <= 0:
-                        await ctx.send(f'<@663844641250213919> à eu les 800hrs FivM, mais qu\'on est-il de la whitelist')
-                        print(ctx.channel.topic)
-                        await ctx.channel.edit(topic="VPS fournit par : 🇯 🇪  -  🇫 🇮 🇱 🇲 🇪  -  🇱 🇪  -  🇲 🇦 🇹 🇨 🇭 - ❤️ !")
-                        print(ctx.channel.topic)
-
+                    heures_restantes = 800 - heures_fivem
+                    
+                    if heures_restantes <= 0:
+                        msg = f'<@663844641250213919> a atteint les 800h sur FiveM!'
+                    elif heures_restantes <= 24:
+                        msg = f"Il ne reste que {heures_restantes}h, bientôt le rôleplay !"
                     else:
-                        await ctx.send(f"Il reste {heures_whitelist}hrs pour la whitelist de <@663844641250213919> ! S\'il rate, je cramptouille 24h")
-                        print(ctx.channel.topic)
-                        await ctx.channel.edit(topic="VPS fournit par : 🇯 🇪  -  🇫 🇮 🇱 🇲 🇪  -  🇱 🇪  -  🇲 🇦 🇹 🇨 🇭 - ❤️ !")
-                        print(ctx.channel.topic)
-
+                        msg = f"Il reste {heures_restantes}h pour la whitelist !"
+                    
+                    await ctx.send(msg)
+                    await ctx.channel.edit(topic="VPS fourni par : 🇯🇪 - 🇫🇮🇱🇲🇪 - 🇱🇪 - 🇲🇦🇹🇨🇭 - ❤️")
+                    return
+        
+        await ctx.send("Jeu non trouvé dans l'historique récent.")
+    except Exception as e:
+        logger.error(f"Erreur dans la commande vision: {e}")
+        await ctx.send("Une erreur s'est produite lors de la vérification des heures.")
 
 @bot.command(name="logs")
+@commands.has_permissions(administrator=True)
 async def logs(ctx):
-
-    url = "https://api.staff.gta.ctgaming.fr:2053/api/logs"
-
-    querystring = {"request": "logs", "type": "All", "search": "", "page": "0"}
-    headers = {
-        "authority": "api.staff.gta.ctgaming.fr:2053",
-        "accept": "*/*",
-        "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-        "authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjN1RXlWMjgwcWNyTzFxa1cwQU50ZyJ9.eyJpc3MiOiJodHRwczovL2Rldi1teXA2YmVsby51cy5hdXRoMC5jb20vIiwic3ViIjoib2F1dGgyfGRpc2NvcmR8NjYzODQ0NjQxMjUwMjEzOTE5IiwiYXVkIjpbImh0dHBzOi8vZGFzaGJvYXJkLWN0Zy1hcGkiLCJodHRwczovL2Rldi1teXA2YmVsby51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNzA4NjQxODMyLCJleHAiOjE3MDg3MjgyMzIsImF6cCI6Ik1SY25JZFg1RXZLdWt0aXlIZGpQb013QkZzYVBNMjFmIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9.an13hhy6gTs7KgmeMEiLQJ9Cb5bkQqWil4pxx83Ti-q1F3EKW2_915l6nULJkzWvkbXKztN3QDlb4Q6LBjm9F63JLb0JmyiXTYYdAzg1V9IUnXstHJaNQYU5thGZn4HWaZX1vJG6wjF9cQNWVAxNs5w4BmtQjRYXhb_hxlDrJCIbVAIt-m6pHjKluPb4oMR2EdP7F1vY0grArDbFvCovntd92YwzySoCIAu_6uK9mGkG03rBJQ04PLx8OGZLF6uxJ8RT7nOjbbBkRIcz-Qz8xwTUVxPI6MS8DdjZpgLsucPuZNE2Yfxtf49tJ89UP4qsfUkLR-gVhyQYGJfIsoOQ8w",
-        "if-none-match": "W/^\^ce5-W39uZvGvcdMxTABhrXN2aFdt6kQ^^",
-        "origin": "https://staff.gta.ctgaming.fr",
-        "referer": "https://staff.gta.ctgaming.fr/",
-        "sec-ch-ua": "^\^Not",
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": "^\^Windows^^",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-site",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 OPR/107.0.0.0"
-    }
-
-    response = requests.get(url, headers=headers, params=querystring)
-
-    data = response.json()
-
-    if "result" in data:
-        embed = discord.Embed(title="LOGGING CTG - NO ZOMBIE HERE", color=discord.Color.from_rgb(0, 0, 0))
-        for entry in data["result"]:
-            log_type = entry.get("type", "")
-            if log_type != "Login":
-                log_message = entry.get("message", "")
-                log_date = datetime.strptime(entry.get("tcreate", ""), "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%d/%m/%Y %H:%M")
-                embed.add_field(name=f"Type: {log_type}", value=f"Message: {log_message}\nDate: {log_date}",inline=False)
-                embed.set_footer(text="Assistant Khali", icon_url=ctx.author.avatar.url)
-
-        await ctx.send(embed=embed)
-
-@bot.command(name="id")
-async def id(ctx, ident: str):
-
-    url = f'https://api.staff.gta.ctgaming.fr:2053/api/playerinfo?type=id&q={ident}'
-    print(url)
-
-    headers = {
-        "authority": "api.staff.gta.ctgaming.fr:2053",
-        "accept": "*/*",
-        "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-        "authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjN1RXlWMjgwcWNyTzFxa1cwQU50ZyJ9.eyJpc3MiOiJodHRwczovL2Rldi1teXA2YmVsby51cy5hdXRoMC5jb20vIiwic3ViIjoib2F1dGgyfGRpc2NvcmR8NjYzODQ0NjQxMjUwMjEzOTE5IiwiYXVkIjpbImh0dHBzOi8vZGFzaGJvYXJkLWN0Zy1hcGkiLCJodHRwczovL2Rldi1teXA2YmVsby51cy5hdXRoMC5jb20vdXNlcmluZm8iXSwiaWF0IjoxNzA4NjQxNjI1LCJleHAiOjE3MDg3MjgwMjUsImF6cCI6Ik1SY25JZFg1RXZLdWt0aXlIZGpQb013QkZzYVBNMjFmIiwic2NvcGUiOiJvcGVuaWQgcHJvZmlsZSBlbWFpbCJ9.vpH7ldi70EW13_Ma72beYx6mOibetqcTBTk12yWDAo0dJOSwPsbORuJTLzX2iTdiTYUTwxNIzaWtE6o9mv0nOnPV6D0CsWHqxRSqAeyf6G3W4-jtdx8yy3wsfCMm9umzZH4pbTw_uoQkeu2i9deTHpPV4a3pVKOGNfHjS7JW-YPoMtHHaJVZ0-WPAGs_12qIyaU7KU2HJzYTweqP3xJrCza4-062xEp8fxFuSuk0R5lLPYHX75Tx7RrxG_jnEij8Mb1xCQBxsJCdAAmavAxlyCo1VsCEgbQotJlirYtAl6iGDBTk1zRRJO3hAvCL_wSfgzQsrt0UQmSlLXsYNiL7dg",
-        "if-none-match": "W/^\^14b-yEtfv+POjBKYimgUqZuXlntoI24^^",
-        "origin": "https://staff.gta.ctgaming.fr",
-        "referer": "https://staff.gta.ctgaming.fr/",
-        "sec-ch-ua": "^\^Not",
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": "^\^Windows^^",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-site",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 OPR/107.0.0.0"
-    }
-
-    response = requests.get(url, headers=headers)
-
-    print(response.text)
-
-    if response.status_code == 200:
+    try:
+        headers = {
+            "authorization": "Bearer YOUR_TOKEN",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        }
+        
+        response = requests.get(
+            "https://api.staff.gta.ctgaming.fr:2053/api/logs",
+            headers=headers,
+            params={"request": "logs", "type": "All", "search": "", "page": "0"}
+        )
+        response.raise_for_status()
         data = response.json()
 
-        user_info = {
-            'id': data['accounts'][0]['id'],
-            'rank': data['accounts'][0]['rank'],
-            'vip': data['accounts'][0]['vip'],
-            'bandata': data['accounts'][0]['bandata']
-        }
+        if "result" not in data:
+            await ctx.send("Aucun log disponible.")
+            return
 
-        embed = discord.Embed(title=f"Informations sur l'ID {ident}", color=discord.Color.from_rgb(255, 255, 255))
-        embed.add_field(name='ID', value=user_info['id'])
-        embed.add_field(name='RANK', value=user_info['rank'])
-        embed.add_field(name='VIP', value='Oui' if user_info['vip'] == 1 else 'Non')
-        embed.add_field(name='INFORMATIONS SUR LE DERNIER BAN', value=user_info['bandata'])
+        embed = discord.Embed(title="LOGS SERVEUR", color=0x000000)
+        
+        for entry in data["result"]:
+            if entry.get("type") != "Login":
+                date = datetime.strptime(entry.get("tcreate", ""), "%Y-%m-%dT%H:%M:%S.%fZ").strftime("%d/%m/%Y %H:%M")
+                embed.add_field(
+                    name=f"Type: {entry.get('type', 'Inconnu')}",
+                    value=f"Message: {entry.get('message', 'N/A')}\nDate: {date}",
+                    inline=False
+                )
+        
         embed.set_footer(text="Assistant Khali", icon_url=ctx.author.avatar.url)
-
         await ctx.send(embed=embed)
+    except Exception as e:
+        logger.error(f"Erreur dans la commande logs: {e}")
+        await ctx.send("Erreur lors de la récupération des logs.")
+
+@bot.command(name="id")
+@commands.has_permissions(administrator=True)
+async def id(ctx, ident: str):
+    """Recherche un joueur par ID (Admin seulement)"""
+    try:
+        headers = {
+            "authorization": "Bearer YOUR_TOKEN",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        }
+        
+        response = requests.get(
+            f"https://api.staff.gta.ctgaming.fr:2053/api/playerinfo?type=id&q={ident}",
+            headers=headers
+        )
+        response.raise_for_status()
+        data = response.json()
+
+        if not data.get('accounts'):
+            await ctx.send("Aucun joueur trouvé avec cet ID.")
+            return
+
+        account = data['accounts'][0]
+        fields = [
+            ("ID", account.get('id', 'N/A'), True),
+            ("RANK", account.get('rank', 'N/A'), True),
+            ("VIP", "Oui" if account.get('vip') == 1 else "Non", True),
+            ("DERNIER BAN", account.get('bandata', 'Aucun'), False)
+        ]
+        
+        await send_embed(
+            ctx,
+            f"Info Joueur - ID {ident}",
+            "",
+            color=0xFFFFFF,
+            fields=fields,
+            footer="Assistant Khali"
+        )
+    except Exception as e:
+        logger.error(f"Erreur dans la commande id: {e}")
+        await ctx.send("Erreur lors de la recherche du joueur.")
 
 @bot.command(name="entretien")
+@commands.has_permissions(administrator=True)
 async def entretien(ctx):
+    """Affiche les entretiens programmés (Admin seulement)"""
+    try:
+        headers = {
+            "cookie": "YOUR_COOKIE",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
+        }
+        
+        response = requests.get(
+            "https://panel.visionrp.fr/api/profile/getSessions/VFvnq42Mt9eEvtjX2VvzxivXitKY5H",
+            headers=headers
+        )
+        response.raise_for_status()
+        data = response.json()
 
-    url = "https://panel.visionrp.fr/api/profile/getSessions/VFvnq42Mt9eEvtjX2VvzxivXitKY5H"
+        if not data:
+            await ctx.send("Aucun entretien programmé.")
+            return
 
-    payload = ""
-    headers = {
-        "authority": "panel.visionrp.fr",
-        "accept": "application/json, text/plain, */*",
-        "accept-language": "fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7",
-        "cookie": "", ## TOKEN ICI
-        "if-none-match": "W/^\^8d-J6buw80pkbXNkgWI63AsW5B3G2g^^",
-        "referer": "https://panel.visionrp.fr/",
-        "sec-ch-ua": "^\^Not",
-        "sec-ch-ua-mobile": "?0",
-        "sec-ch-ua-platform": "^\^Windows^^",
-        "sec-fetch-dest": "empty",
-        "sec-fetch-mode": "cors",
-        "sec-fetch-site": "same-origin",
-        "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36 OPR/107.0.0.0"
-    }
+        for session in data:
+            fields = [
+                ("ID", session.get('id', 'N/A'), True),
+                ("Début", session.get('start', 'N/A'), True),
+                ("Fin", session.get('end', 'N/A'), True),
+                ("Slots", str(session.get('slots', 'N/A')), False),
+                ("Thème", session.get('theme', 'N/A'), False)
+            ]
+            
+            await send_embed(
+                ctx,
+                "Entretien Programmé",
+                "",
+                fields=fields
+            )
+    except Exception as e:
+        logger.error(f"Erreur dans la commande entretien: {e}")
+        await ctx.send("Erreur lors de la récupération des entretiens.")
 
-    response = requests.get(url, headers=headers)
-
-    if response.status_code == 200:
-        data = json.loads(response.text)
-
-        for entretien in data:
-            entretien_id = entretien.get("id")
-            start_time = entretien.get("start")
-            end_time = entretien.get("end")
-            slots = entretien.get("slots")
-            theme = entretien.get("theme")
-
-            await ctx.send(f"# Entretien # {entretien_id}\n\n**Commence le :** {start_time}\n**Fini le :** {end_time}\n**Slots:** {slots}\n**Theme:** {theme}")
-
-@bot.event
-async def on_message(message):
-    await message.delete()
-    if message.author.bot:
-        return
-    salon_voulu = 1036578555624165476
-    if message.channel.id == salon_voulu and message.content.isdigit():
-        discordid = message.content
-        await message.channel.send(f"{discordid} - <@{discordid}>")
-
-
+if __name__ == "__main__":
+    bot.run(api_token)
