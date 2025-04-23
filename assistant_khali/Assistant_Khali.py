@@ -257,7 +257,6 @@ async def logs(ctx):
 @bot.command(name="id")
 @commands.has_permissions(administrator=True)
 async def id(ctx, ident: str):
-    """Recherche un joueur par ID (Admin seulement)"""
     try:
         headers = {
             "authorization": "Bearer YOUR_TOKEN",
@@ -298,10 +297,9 @@ async def id(ctx, ident: str):
 @bot.command(name="entretien")
 @commands.has_permissions(administrator=True)
 async def entretien(ctx):
-    """Affiche les entretiens programmés (Admin seulement)"""
     try:
         headers = {
-            "cookie": "YOUR_COOKIE",
+            "cookie": "//",
             "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"
         }
         
