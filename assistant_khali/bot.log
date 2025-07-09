@@ -1,0 +1,66 @@
+2025-06-12 14:39:37,727 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2025-06-12 14:39:55,840 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2025-06-12 14:39:55,842 - discord.client - INFO - logging in using static token
+2025-06-12 14:39:57,460 - discord.gateway - INFO - Shard ID None has connected to Gateway (Session ID: 0523e954e68fc7cdc07647699b1cbb9c).
+2025-06-12 14:39:59,483 - __main__ - INFO - Connecté en tant que Assistant Khali (ID: 964106274482573363)
+2025-06-12 14:39:59,483 - __main__ - INFO - ------
+2025-06-12 14:39:59,484 - __main__ - INFO - Serveurs connectés:
+2025-06-12 14:39:59,484 - __main__ - INFO - - Serveur de Khali (ID: 811911508439072780)
+2025-06-12 14:39:59,485 - __main__ - INFO - - Serveur de Khali22 (ID: 1042098326088192071)
+2025-06-12 14:39:59,485 - __main__ - INFO - - Aximme Dev Center (ID: 1184511391726588007)
+2025-06-12 14:42:16,284 - discord.app_commands.tree - ERROR - Ignoring exception in command tree
+Traceback (most recent call last):
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\app_commands\tree.py", line 1089, in wrapper
+    await self._call(interaction)
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\app_commands\tree.py", line 1221, in _call
+    command, options = self._get_app_command_options(data)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\app_commands\tree.py", line 1125, in _get_app_command_options
+    raise CommandNotFound(name, parents)
+discord.app_commands.errors.CommandNotFound: Application command 'hello' not found
+2025-06-12 14:42:28,423 - discord.app_commands.tree - ERROR - Ignoring exception in command tree
+Traceback (most recent call last):
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\app_commands\tree.py", line 1089, in wrapper
+    await self._call(interaction)
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\app_commands\tree.py", line 1221, in _call
+    command, options = self._get_app_command_options(data)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\app_commands\tree.py", line 1125, in _get_app_command_options
+    raise CommandNotFound(name, parents)
+discord.app_commands.errors.CommandNotFound: Application command 'rapport' not found
+2025-06-12 14:42:41,501 - __main__ - ERROR - Erreur dans la commande entretien: HTTPSConnectionPool(host='panel.visionrp.fr', port=443): Max retries exceeded with url: /api/profile/getSessions/VFvnq42Mt9eEvtjX2VvzxivXitKY5H (Caused by NameResolutionError("<urllib3.connection.HTTPSConnection object at 0x00000161EA635310>: Failed to resolve 'panel.visionrp.fr' ([Errno 11001] getaddrinfo failed)"))
+2025-06-12 14:42:48,500 - discord.ext.commands.bot - ERROR - Ignoring exception in command id
+Traceback (most recent call last):
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\bot.py", line 1350, in invoke
+    await ctx.command.invoke(ctx)
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\core.py", line 1015, in invoke
+    await self.prepare(ctx)
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\core.py", line 932, in prepare
+    await self._parse_arguments(ctx)
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\core.py", line 839, in _parse_arguments
+    transformed = await self.transform(ctx, param, attachments)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\ext\commands\core.py", line 691, in transform
+    raise MissingRequiredArgument(param)
+discord.ext.commands.errors.MissingRequiredArgument: ident is a required argument that is missing.
+2025-06-12 14:42:58,341 - __main__ - ERROR - Erreur dans la commande logs: 401 Client Error: Unauthorized for url: https://api.staff.gta.ctgaming.fr:2053/api/logs?request=logs&type=All&search=&page=0
+2025-06-12 14:47:45,400 - discord.client - WARNING - PyNaCl is not installed, voice will NOT be supported
+2025-06-12 14:47:45,402 - discord.client - INFO - logging in using static token
+2025-06-12 14:47:46,668 - discord.gateway - INFO - Shard ID None has connected to Gateway (Session ID: 48c90dea9421dc357717e9d0c1053f78).
+2025-06-12 14:47:48,695 - __main__ - INFO - Connecté en tant que Assistant Khali (ID: 964106274482573363)
+2025-06-12 14:47:48,695 - __main__ - INFO - ------
+2025-06-12 14:47:48,695 - __main__ - INFO - Serveurs connectés:
+2025-06-12 14:47:48,696 - __main__ - INFO - - Serveur de Khali (ID: 811911508439072780)
+2025-06-12 14:47:48,696 - __main__ - INFO - - Serveur de Khali22 (ID: 1042098326088192071)
+2025-06-12 14:47:48,696 - __main__ - INFO - - Aximme Dev Center (ID: 1184511391726588007)
+2025-06-12 14:47:49,048 - __main__ - INFO - Commandes slash synchronisées.
+2025-06-12 14:49:23,077 - discord.app_commands.tree - ERROR - Ignoring exception in command tree
+Traceback (most recent call last):
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\app_commands\tree.py", line 1089, in wrapper
+    await self._call(interaction)
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\app_commands\tree.py", line 1221, in _call
+    command, options = self._get_app_command_options(data)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\PC GAMER\AppData\Local\Programs\Python\Python311\Lib\site-packages\discord\app_commands\tree.py", line 1125, in _get_app_command_options
+    raise CommandNotFound(name, parents)
+discord.app_commands.errors.CommandNotFound: Application command 'rapport' not found
