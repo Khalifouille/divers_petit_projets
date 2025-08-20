@@ -56,7 +56,7 @@ async def on_guild_channel_update(before, after):
             "description": (
                 f"**Salon:** {after.mention}\n"
                 f"**Responsable:** {executor.mention if executor else executor_text}\n"
-                f"**Déplacement:** `{before.category.name if before.category else 'Aucune'}` → `{after.category.name if after.category else 'Aucune'}`"
+                f"**Déplacement.:** `{before.category.name if before.category else 'Aucune'}` → `{after.category.name if after.category else 'Aucune'}`"
             )
         }
 
