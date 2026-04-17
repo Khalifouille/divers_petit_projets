@@ -4,3 +4,6 @@ naim_google_slides/client_secret_916689696131-obaj2l7v3a9sgjrroo6r5f8fkgn8526m.a
 naim/.env
 assistant_khali/Assistant_Khali.py
 naim/main.py
+discord-bot/.env
+/discord-bot/node_modules
+/discord-bot/.idea
