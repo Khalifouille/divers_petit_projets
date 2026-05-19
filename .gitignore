@@ -7,3 +7,4 @@ naim/main.py
 discord-bot/.env
 /discord-bot/node_modules
 /discord-bot/.idea
+/node_modules
