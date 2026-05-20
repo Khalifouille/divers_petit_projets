@@ -847,7 +847,7 @@ cc.innerHTML=`<div class="article-card">
 <div class="article-num">ARTICLE ${a.num}</div>
 <div class="article-name">${a.name}</div>
 <div class="article-body">${a.body}</div>
-${a.peines.length?`<div class="article-peine">${a.peines.map(p=>`<span class="peine-tag${p.toLowerCase().includes('mort')||p.toLowerCase().includes('fédéral')||p.toLowerCase().includes('federal')?' red':''}">${p}</span>`).join('')}</div>`:''}
+${a.peines.length?`<div class="article-peine">${a.peines.map(p=>`<span class="peine-tag${p.toLowerCase().includes('mort')||p.toLowerCase().includes('fédéral')?' red':''}">${p}</span>`).join('')}</div>`:''}
 </div>`;
 }
 
@@ -861,21 +861,6 @@ setInterval(updateClock,1000);updateClock();
 renderTable();
 buildCodeNav();
 document.getElementById('statCount').textContent=DELITS.length;
-
-// Fonction pour réinitialiser la recherche
-function resetSearch() {
-    const input = document.getElementById('search');
-    input.value = '';
-    handleSearch();
-}
-
-// Fonction pour réinitialiser la sélection active
-function resetSelection() {
-    selectedDelits = []; 
-    renderCalculateur(); 
-    resetSearch();
-    console.log("MDT réinitialisé");
-}
 </script>
 </body>
 </html>
