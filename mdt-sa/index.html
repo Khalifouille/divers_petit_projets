@@ -9,28 +9,28 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
---bg:#0a0c0f;
---bg2:#0f1215;
---bg3:#141820;
---panel:#111418;
---panel2:#161b22;
---border:#1e2530;
---border2:#2a3340;
---accent:#c9a84c;
---accent2:#e8c46a;
---accent3:#f0d080;
+--bg:#061018;
+--bg2:#08151a;
+--bg3:#0b1820;
+--panel:#0e1b20;
+--panel2:#122426;
+--border:#12262b;
+--border2:#16343a;
+--accent:#3fb6a8;
+--accent2:#66d6c3;
+--accent3:#9ef0e2;
 --red:#e05252;
 --green:#52c27a;
---blue:#5298e0;
---purple:#9b72cf;
---text:#e8eaed;
---text2:#9aa0ac;
---text3:#5a6070;
+--blue:#4a8fd6;
+--purple:#7a67b8;
+--text:#e6f0ef;
+--text2:#98a9ad;
+--text3:#4b5960;
 --font-display:'Rajdhani',sans-serif;
 --font-body:'Exo 2',sans-serif;
 --font-mono:'Share Tech Mono',monospace;
 }
-html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;overflow:hidden}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;overflow:auto}
 
 body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);pointer-events:none;z-index:9999}
 
@@ -214,6 +214,29 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:var(--bg2)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+
+/* Responsive tweaks */
+@media (max-width:1000px){
+  .calc-layout{grid-template-columns:1fr}
+  .code-layout{grid-template-columns:1fr}
+  .right-panel{min-height:240px}
+  .sidebar{width:64px}
+  .sidebar .sidebar-header,.sidebar .sidebar-footer{display:none}
+  .logo>span{display:none}
+  .logo-sub{display:none}
+  .nav-item{padding:10px 12px;font-size:12px}
+  .panel-toolbar{flex-wrap:wrap;gap:8px}
+  .search-wrap{flex-basis:100%;order:1}
+  .filter-chips{order:2}
+  .rp-section{padding:12px}
+}
+
+@media (max-width:480px){
+  .topbar{padding:0 12px}
+  .page-title{font-size:18px}
+  .page-subtitle{font-size:11px}
+  .filter-chips .fc{padding:6px 8px;font-size:11px}
+}
 </style>
 </head>
 <body>
@@ -221,19 +244,14 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
 
 <div class="topbar">
   <div class="logo">
-    <svg viewBox="0 0 28 28" fill="none"><polygon points="14,2 26,8 26,20 14,26 2,20 2,8" stroke="#c9a84c" stroke-width="1.5" fill="rgba(201,168,76,.08)"/><text x="14" y="18" text-anchor="middle" fill="#c9a84c" font-size="10" font-family="Rajdhani" font-weight="700">DOJ</text></svg>
-    <span>LSPD — MDT</span>
+    <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="12" stroke="var(--accent)" stroke-width="1.2" fill="rgba(63,182,168,.06)"/><text x="14" y="18" text-anchor="middle" fill="var(--accent)" font-size="9" font-family="Rajdhani" font-weight="700">MDT</text></svg>
+    <span>MDT — SANAND</span>
     <div class="logo-sep"></div>
     <span class="logo-sub">San Andreas</span>
   </div>
-  <div class="topbar-center">
-    <div class="status-indicators">
-      <div class="status-dot"><span class="dot"></span>SYSTÈME ACTIF</div>
-    </div>
-  </div>
+  
   <div class="topbar-right">
     <div class="badge-version">v3.1 — 2025</div>
-    <div class="clock" id="clock">00:00:00</div>
   </div>
 </div>
 
@@ -276,6 +294,10 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
               <button class="fc" style="color:#c9a0ff" onclick="setFilter('bi',this)">B.I.</button>
               <button class="fc" style="color:#7dd99a" onclick="setFilter('comparution',this)">COMPAR.</button>
               <button class="fc" style="color:#82b8f0" onclick="setFilter('normale',this)">NORMALE</button>
+            </div>
+            <div style="display:flex;gap:8px;margin-left:8px">
+              <button class="fc" id="reset-search-btn" title="Réinitialiser la recherche" onclick="resetSearch()">RÉINIT. RECH.</button>
+              <button class="fc" id="reset-sel-btn" title="Réinitialiser les délits sélectionnés" onclick="resetSelections()">RÉINIT. SÉL.</button>
             </div>
           </div>
           <div class="table-wrap">
@@ -821,6 +843,20 @@ searchTerm=document.getElementById('search').value.toLowerCase().trim();
 renderTable();
 }
 
+function resetSearch(){
+  const inp=document.getElementById('search');
+  if(!inp)return;
+  inp.value='';
+  searchTerm='';
+  renderTable();
+}
+
+function resetSelections(){
+  selected.clear();
+  renderTable();
+  renderResult();
+}
+
 function showPage(name,el){
 document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
 document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -852,11 +888,13 @@ ${a.peines.length?`<div class="article-peine">${a.peines.map(p=>`<span class="pe
 }
 
 // CLOCK
-function updateClock(){
-const now=new Date();
-document.getElementById('clock').textContent=now.toLocaleTimeString('fr-FR');
+// Responsive handler: ajoute/supprime la classe 'mobile' selon la largeur
+function handleResponsive(){
+  if(window.innerWidth<=1000) document.body.classList.add('mobile');
+  else document.body.classList.remove('mobile');
 }
-setInterval(updateClock,1000);updateClock();
+window.addEventListener('resize',handleResponsive);
+handleResponsive();
 
 renderTable();
 buildCodeNav();
