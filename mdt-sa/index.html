@@ -32,13 +32,10 @@
 }
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:14px;overflow:hidden}
 
-/* SCANLINE EFFECT */
 body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);pointer-events:none;z-index:9999}
 
-/* LAYOUT */
 .app{display:flex;flex-direction:column;height:100vh}
 
-/* TOP BAR */
 .topbar{height:52px;background:var(--bg2);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:20px;flex-shrink:0;position:relative}
 .topbar::after{content:'';position:absolute;bottom:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);opacity:.4}
 .logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-size:18px;font-weight:700;letter-spacing:2px;color:var(--accent);text-transform:uppercase}
@@ -54,10 +51,8 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 .clock{font-family:var(--font-mono);font-size:13px;color:var(--accent);letter-spacing:1px}
 .badge-version{font-size:10px;font-family:var(--font-mono);color:var(--text3);border:1px solid var(--border2);padding:2px 7px;border-radius:2px}
 
-/* MAIN */
 .main{flex:1;display:flex;overflow:hidden}
 
-/* SIDEBAR */
 .sidebar{width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
 .sidebar-header{padding:16px 16px 8px;font-family:var(--font-mono);font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase}
 .nav-item{display:flex;align-items:center;gap:10px;padding:11px 16px;cursor:pointer;transition:all .15s;border-left:2px solid transparent;font-size:13px;font-weight:500;color:var(--text2)}
@@ -70,20 +65,16 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 .sidebar-stat{font-size:11px;color:var(--text3);font-family:var(--font-mono);margin-bottom:4px}
 .sidebar-stat span{color:var(--accent)}
 
-/* CONTENT */
 .content{flex:1;overflow:hidden;display:flex;flex-direction:column}
 
-/* PAGE HEADER */
 .page-header{padding:20px 24px 0;flex-shrink:0}
 .page-title{font-family:var(--font-display);font-size:22px;font-weight:700;letter-spacing:1px;color:var(--text);text-transform:uppercase}
 .page-title span{color:var(--accent)}
 .page-subtitle{font-size:12px;color:var(--text3);font-family:var(--font-mono);margin-top:3px;letter-spacing:.5px}
 .page-divider{height:1px;background:linear-gradient(90deg,var(--border2),transparent);margin:16px 0 0}
 
-/* CALCULATOR PAGE */
 .calc-layout{flex:1;display:grid;grid-template-columns:1fr 380px;overflow:hidden}
 
-/* LEFT PANEL */
 .left-panel{display:flex;flex-direction:column;border-right:1px solid var(--border);overflow:hidden}
 .panel-toolbar{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;gap:10px;align-items:center;flex-shrink:0}
 .search-wrap{flex:1;position:relative}
@@ -96,7 +87,6 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 .fc:hover{border-color:var(--border2);color:var(--text)}
 .fc.active{background:rgba(201,168,76,.1);border-color:var(--accent);color:var(--accent)}
 
-/* TABLE */
 .table-wrap{flex:1;overflow-y:auto;padding:0}
 .table-wrap::-webkit-scrollbar{width:4px}
 .table-wrap::-webkit-scrollbar-track{background:var(--bg2)}
@@ -125,7 +115,6 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
 .proc-special{background:rgba(224,82,82,.1);border-color:rgba(224,82,82,.4);color:#f09090}
 .no-results{padding:40px;text-align:center;color:var(--text3);font-family:var(--font-mono);font-size:12px}
 
-/* RIGHT PANEL */
 .right-panel{display:flex;flex-direction:column;overflow-y:auto;background:var(--bg2)}
 .right-panel::-webkit-scrollbar{width:4px}
 .right-panel::-webkit-scrollbar-track{background:var(--bg2)}
@@ -134,14 +123,12 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
 .rp-title{font-family:var(--font-mono);font-size:10px;color:var(--text3);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:8px}
 .rp-title::after{content:'';flex:1;height:1px;background:var(--border)}
 
-/* SELECTION */
 .sel-empty{color:var(--text3);font-size:12px;font-family:var(--font-mono);text-align:center;padding:16px;border:1px dashed var(--border2);border-radius:3px}
 .sel-chips{display:flex;flex-wrap:wrap;gap:5px}
 .sel-chip{display:flex;align-items:center;gap:5px;background:var(--bg3);border:1px solid var(--border2);padding:3px 7px 3px 9px;border-radius:2px;font-size:11px;color:var(--text2)}
 .sel-chip button{background:none;border:none;cursor:pointer;color:var(--text3);font-size:13px;padding:0;display:flex;align-items:center;transition:.15s}
 .sel-chip button:hover{color:var(--red)}
 
-/* METRICS */
 .metrics-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .metric{background:var(--bg3);border:1px solid var(--border);border-radius:3px;padding:12px}
 .metric.full{grid-column:span 2}
@@ -153,7 +140,6 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
 .metric-sub{font-size:10px;font-family:var(--font-mono);color:var(--text3);margin-top:4px}
 .cap-note{display:flex;align-items:center;gap:5px;font-size:10px;font-family:var(--font-mono);color:#f0a030;margin-top:6px}
 
-/* PROCEDURE */
 .proc-block{border-radius:3px;padding:14px;border-left:3px solid}
 .proc-block.bi{border-color:var(--purple);background:rgba(155,114,207,.05)}
 .proc-block.comp{border-color:var(--green);background:rgba(82,194,122,.05)}
@@ -167,16 +153,14 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
 .proc-step{display:flex;gap:8px;align-items:flex-start;font-size:11px;color:var(--text2)}
 .step-n{font-family:var(--font-mono);font-size:10px;color:var(--text3);padding-top:1px;min-width:16px}
 
-/* BREAKDOWN */
 .breakdown-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border);font-size:11px}
 .breakdown-row:last-child{border-bottom:none}
 .br-name{color:var(--text2);flex:1;margin-right:8px}
 .br-vals{display:flex;gap:10px;align-items:center;flex-shrink:0}
-.br-ans{font-family:var(--font-mono);color:var(--accent);min-width:60px;text-align:right}
+.br-ans{font-family:var(--font-mono);color:var(--accent);min-width:50px;text-align:right}
 .br-amt{font-family:var(--font-mono);color:var(--text2);min-width:90px;text-align:right}
 .br-note{font-size:10px;color:var(--red);font-family:var(--font-mono)}
 
-/* CODE PAGE */
 .code-layout{flex:1;overflow:hidden;display:grid;grid-template-columns:280px 1fr}
 .code-nav{border-right:1px solid var(--border);overflow-y:auto;background:var(--bg2)}
 .code-nav::-webkit-scrollbar{width:3px}
@@ -200,7 +184,6 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
 .peine-tag{padding:4px 10px;border-radius:2px;font-size:11px;font-family:var(--font-mono);background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--accent)}
 .peine-tag.red{background:rgba(224,82,82,.1);border-color:rgba(224,82,82,.3);color:#f09090}
 
-/* PROC PAGE */
 .proc-page{flex:1;overflow-y:auto;padding:24px}
 .proc-page::-webkit-scrollbar{width:4px}
 .proc-page::-webkit-scrollbar-thumb{background:var(--border2)}
@@ -222,15 +205,12 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
 .pfc-step-txt{font-size:12px;color:var(--text2);line-height:1.6}
 .pfc-alert{background:rgba(201,168,76,.07);border:1px solid rgba(201,168,76,.2);border-radius:3px;padding:10px 12px;font-size:11px;color:var(--accent);font-family:var(--font-mono);margin-top:14px;line-height:1.6}
 
-/* HIDDEN PAGES */
 .page{display:none}
 .page.active{display:flex;flex-direction:column;flex:1;overflow:hidden}
 
-/* ANIMATIONS */
 @keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
 .page.active{animation:fadeIn .2s ease}
 
-/* SCROLLBAR global */
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:var(--bg2)}
 ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
@@ -239,7 +219,6 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
 <body>
 <div class="app">
 
-<!-- TOP BAR -->
 <div class="topbar">
   <div class="logo">
     <svg viewBox="0 0 28 28" fill="none"><polygon points="14,2 26,8 26,20 14,26 2,20 2,8" stroke="#c9a84c" stroke-width="1.5" fill="rgba(201,168,76,.08)"/><text x="14" y="18" text-anchor="middle" fill="#c9a84c" font-size="10" font-family="Rajdhani" font-weight="700">DOJ</text></svg>
@@ -253,13 +232,12 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
     </div>
   </div>
   <div class="topbar-right">
-    <div class="badge-version">v3.0 — 2025</div>
+    <div class="badge-version">v3.1 — 2025</div>
     <div class="clock" id="clock">00:00:00</div>
   </div>
 </div>
 
 <div class="main">
-  <!-- SIDEBAR -->
   <div class="sidebar">
     <div class="sidebar-header">Navigation</div>
     <div class="nav-item active" data-page="calc" onclick="showPage('calc',this)">
@@ -278,10 +256,8 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
     </div>
   </div>
 
-  <!-- PAGES -->
   <div class="content">
 
-    <!-- PAGE: CALCULATEUR -->
     <div class="page active" id="page-calc">
       <div class="page-header">
         <div class="page-title">Calculateur de <span>Peines</span></div>
@@ -289,7 +265,6 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
         <div class="page-divider"></div>
       </div>
       <div class="calc-layout">
-        <!-- LEFT -->
         <div class="left-panel">
           <div class="panel-toolbar">
             <div class="search-wrap">
@@ -320,7 +295,6 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
             <div class="no-results" id="no-results" style="display:none">AUCUN RÉSULTAT TROUVÉ</div>
           </div>
         </div>
-        <!-- RIGHT -->
         <div class="right-panel">
           <div class="rp-section">
             <div class="rp-title">Sélection active</div>
@@ -329,8 +303,9 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
           <div class="rp-section">
             <div class="rp-title">Calcul des peines</div>
             <div class="metrics-grid" id="metrics">
-              <div class="metric"><div class="metric-label">Peine totale</div><div class="metric-val">—</div></div>
-              <div class="metric"><div class="metric-label">Amende totale</div><div class="metric-val">—</div></div>
+              <div class="metric"><div class="metric-label">Peine (Années)</div><div class="metric-val">—</div></div>
+              <div class="metric"><div class="metric-label">G.A.V (Heures)</div><div class="metric-val">—</div></div>
+              <div class="metric full"><div class="metric-label">Amende totale</div><div class="metric-val">—</div></div>
               <div class="metric full"><div class="metric-label">Procédure applicable</div><div class="metric-val" style="font-size:16px">—</div></div>
             </div>
           </div>
@@ -346,11 +321,10 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
       </div>
     </div>
 
-    <!-- PAGE: CODE PENAL -->
     <div class="page" id="page-code">
       <div class="page-header">
         <div class="page-title">Code <span>Pénal</span></div>
-        <div class="page-subtitle">SAN ANDREAS — DEPARTMENT OF JUSTICE — V3 (19.01.2025)</div>
+        <div class="page-subtitle">SAN ANDREAS — DEPARTMENT OF JUSTICE — V3.1 (Mis à jour)</div>
         <div class="page-divider"></div>
       </div>
       <div class="code-layout">
@@ -359,7 +333,6 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
       </div>
     </div>
 
-    <!-- PAGE: PROCÉDURES -->
     <div class="page" id="page-proc">
       <div class="page-header">
         <div class="page-title">Guide des <span>Procédures</span></div>
@@ -404,7 +377,6 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
           </div>
         </div>
 
-        <!-- TABLEAU RÉCAPITULATIF -->
         <div style="background:var(--panel);border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:24px">
           <div class="rp-title" style="margin-bottom:14px">Récapitulatif — Qui relève de quoi ?</div>
           <div style="overflow-x:auto">
@@ -432,7 +404,7 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
                 </tr>
                 <tr>
                   <td style="padding:10px 12px"><span class="proc-pill proc-norm">NORMALE</span></td>
-                  <td style="padding:10px 12px;font-size:12px;color:var(--text2)">Vol, possession stupéfiants, outrage, diffamation, refus d'obtempérer...</td>
+                  <td style="padding:10px 12px;font-size:12px;color:var(--text2)">Vol, possession stupéfiants, outrage, diffamation, refus d'obtempérer, délits routiers...</td>
                   <td style="padding:10px 12px;font-size:12px;color:#82b8f0;font-family:var(--font-mono)">Rédigé normalement</td>
                   <td style="padding:10px 12px;font-size:12px;color:var(--text2)">Agent en charge</td>
                 </tr>
@@ -448,6 +420,7 @@ tr.selected .chk{background:var(--accent);border-color:var(--accent);color:#000}
 
 <script>
 const DELITS=[
+// CODE PENAL - COMPARUTION
 {code:"211-1-1",name:"Tentative de meurtre",ans:10,amende:400000,proc:"comparution"},
 {code:"211-4",name:"Homicide involontaire",ans:8,amende:100000,proc:"comparution"},
 {code:"211-4-1",name:"Homicide involontaire aggravé (véhicule)",ans:9,amende:150000,proc:"comparution"},
@@ -457,11 +430,10 @@ const DELITS=[
 {code:"213-10",name:"Harcèlement moral",ans:0,amende:2500,proc:"comparution",gav:24},
 {code:"214-3",name:"Prise de pouvoir sur agent LSPD",ans:20,amende:200000,proc:"comparution"},
 {code:"215-1-1",name:"Violation de propriété privée",ans:0,amende:40000,proc:"comparution",gav:12},
-{code:"215-1-2",name:"Violation de propriété privée aggravée",ans:1,amende:80000,proc:"comparution"},
+{code:"215-1-2",name:"Violation de prop. privée aggravée",ans:1,amende:80000,proc:"comparution"},
 {code:"311-6",name:"Usurpation de fonction",ans:5,amende:50000,proc:"comparution"},
 {code:"312-4",name:"Entrave à la justice simple",ans:5,amende:70000,proc:"comparution"},
 {code:"313-4",name:"Création d'hostilité",ans:20,amende:100000,proc:"comparution"},
-{code:"322-1",name:"Tentative de corruption",ans:2,amende:50000,proc:"comparution"},
 {code:"343-1",name:"Entrave envers les institutions",ans:20,amende:250000,proc:"comparution"},
 {code:"343-2",name:"Intrusion secteur défense",ans:25,amende:250000,proc:"comparution"},
 {code:"411-2",name:"Braquage (entreprise/maison)",ans:30,amende:200000,proc:"comparution"},
@@ -473,6 +445,9 @@ const DELITS=[
 {code:"511-5",name:"Possession arme lourde sans licence",ans:2,amende:25000,proc:"comparution"},
 {code:"612-2",name:"Distribution de stupéfiants",ans:1,amende:30000,proc:"comparution"},
 {code:"613-4",name:"Participation à un Go-fast",ans:15,amende:50000,proc:"comparution"},
+{code:"722-1",name:"Jeux implicant mineurs/vulnérables",ans:7,amende:150000,proc:"comparution"},
+
+// CODE PENAL - BUREAU D'INVESTIGATION (B.I.)
 {code:"112",name:"Légitime défense",ans:0,amende:0,proc:"bi",note:"Cause irresponsabilité"},
 {code:"113-1",name:"Retrait illégal bracelet électronique",ans:30,amende:400000,proc:"bi"},
 {code:"113-2",name:"Rupture contrat de justice/police",ans:0,amende:0,proc:"bi",note:"Peine fédérale"},
@@ -480,13 +455,15 @@ const DELITS=[
 {code:"211-1-2",name:"Meurtre aggravé",ans:30,amende:600000,proc:"bi"},
 {code:"211-2",name:"Assassinat",ans:30,amende:700000,proc:"bi"},
 {code:"211-3",name:"Trafic d'organes humains",ans:15,amende:300000,proc:"bi"},
+{code:"213-3",name:"Torture",ans:0,amende:0,proc:"bi",note:"Peine de mort"},
 {code:"213-5-1",name:"Viol",ans:20,amende:200000,proc:"bi"},
 {code:"213-5-2",name:"Tentative de viol",ans:15,amende:150000,proc:"bi"},
-{code:"213-6",name:"Viol en réunion",ans:30,amende:0,proc:"bi",note:"Peine fédérale si mort"},
+{code:"213-6",name:"Viol en réunion",ans:30,amende:0,proc:"bi",note:"Peine féd. si mort"},
 {code:"213-7-1",name:"Agressions sexuelles",ans:10,amende:100000,proc:"bi"},
 {code:"213-7-2",name:"Agressions sexuelles aggravées",ans:15,amende:150000,proc:"bi"},
 {code:"213-11",name:"Non-respect du secret professionnel",ans:10,amende:20000,proc:"bi"},
 {code:"214-1",name:"Enlèvement et/ou séquestration",ans:15,amende:300000,proc:"bi"},
+{code:"214-2",name:"Prise d'otage",ans:30,amende:400000,proc:"bi"},
 {code:"214-3-2",name:"Prise de pouvoir sur agent fédéral",ans:30,amende:350000,proc:"bi"},
 {code:"312-5",name:"Entrave à la justice (dépositaire)",ans:15,amende:100000,proc:"bi"},
 {code:"312-6",name:"Mensonge sous serment",ans:0,amende:0,proc:"bi",note:"Peine fédérale"},
@@ -505,15 +482,21 @@ const DELITS=[
 {code:"342-4",name:"Sabotage",ans:30,amende:400000,proc:"bi"},
 {code:"343-4",name:"Tentative de coup d'État",ans:0,amende:0,proc:"bi",note:"Peine fédérale"},
 {code:"422-2",name:"Blanchiment aggravé",ans:30,amende:1000000,proc:"bi"},
-{code:"511-4",name:"Possession équipement/arme de guerre",ans:15,amende:100000,proc:"bi"},
+{code:"511-4",name:"Possession équipement/arme guerre",ans:15,amende:100000,proc:"bi"},
 {code:"512-1",name:"Distribution non autorisée arme légale",ans:5,amende:100000,proc:"bi"},
 {code:"512-2",name:"Distribution non autorisée arme lourde",ans:25,amende:200000,proc:"bi"},
 {code:"512-3",name:"Distribution arme illégale",ans:10,amende:150000,proc:"bi"},
-{code:"512-4",name:"Distribution équipement/arme de guerre",ans:10,amende:150000,proc:"bi"},
+{code:"512-4",name:"Distribution équipement/arme guerre",ans:10,amende:150000,proc:"bi"},
 {code:"513-1",name:"Trafic d'armes",ans:30,amende:300000,proc:"bi"},
 {code:"613-1",name:"Fabrication de stupéfiants",ans:15,amende:50000,proc:"bi"},
+{code:"712-1",name:"Création/Exploitation jeux illégaux",ans:10,amende:300000,proc:"bi"},
+{code:"721-1",name:"Blanchiment profits jeux",ans:5,amende:500000,proc:"bi"},
+{code:"722-2",name:"Participation figure autorité (Jeux)",ans:12,amende:400000,proc:"bi"},
+
+// CODE PENAL - NORMALE
+{code:"212-1",name:"Mise en danger vie d'autrui",ans:5,amende:40000,proc:"normale"},
+{code:"212-2",name:"Non-assistance personne en danger",ans:1,amende:10000,proc:"normale"},
 {code:"213-1",name:"Agression simple",ans:5,amende:50000,proc:"normale"},
-{code:"213-3",name:"Torture",ans:0,amende:0,proc:"normale",note:"Peine de mort"},
 {code:"213-4",name:"Menace criminelle",ans:5,amende:30000,proc:"normale"},
 {code:"213-8",name:"Tentative d'agression sexuelle",ans:10,amende:100000,proc:"normale"},
 {code:"213-12",name:"Diffamation publique",ans:0,amende:1500,proc:"normale"},
@@ -530,15 +513,18 @@ const DELITS=[
 {code:"312-9",name:"Appel 911 abusif",ans:0,amende:20000,proc:"normale"},
 {code:"312-10",name:"Non-présentation pièce d'identité",ans:0,amende:3000,proc:"normale",gav:24},
 {code:"313-1",name:"Manifestation illégale",ans:0,amende:30000,proc:"normale",gav:24},
-{code:"313-2",name:"Trouble à l'ordre public",ans:0,amende:15000,proc:"normale",gav:10},
+{code:"313-2",name:"Trouble à l'ordre public simple",ans:0,amende:15000,proc:"normale",gav:10},
 {code:"313-3",name:"Trouble à l'ordre public aggravé",ans:0,amende:40000,proc:"normale",gav:24},
 {code:"321-2",name:"Tentative de corruption",ans:2,amende:50000,proc:"normale"},
+{code:"322-1",name:"Faux et usage de faux",ans:3,amende:50000,proc:"normale"},
 {code:"343-3",name:"Survol zone interdite/militaire",ans:0,amende:200000,proc:"normale",note:"Saisie de l'engin"},
 {code:"411-1",name:"Vol envers un particulier",ans:5,amende:30000,proc:"normale"},
 {code:"412-1",name:"Racket",ans:1,amende:20000,proc:"normale"},
+{code:"412-4",name:"Non-paiement d'un service",ans:0,amende:0,proc:"normale",note:"Amende = Montant x3"},
 {code:"413-1",name:"Escroquerie",ans:8,amende:50000,proc:"normale"},
 {code:"421-1",name:"Recel",ans:5,amende:50000,proc:"normale"},
-{code:"422-1",name:"Blanchiment",ans:20,amende:500000,proc:"normale"},
+{code:"422-1",name:"Blanchiment d'argent/biens",ans:20,amende:500000,proc:"normale"},
+{code:"423-1",name:"Détention excessive liquide",ans:0,amende:0,proc:"normale",note:"Saisie et enquête"},
 {code:"511-1",name:"Possession d'une lame",ans:0,amende:15000,proc:"normale"},
 {code:"511-2",name:"Possession arme légale sans licence",ans:2,amende:25000,proc:"normale"},
 {code:"511-3",name:"Possession arme illégale",ans:10,amende:60000,proc:"normale"},
@@ -549,9 +535,49 @@ const DELITS=[
 {code:"612-1",name:"Vente de stupéfiants",ans:3,amende:50000,proc:"normale"},
 {code:"613-2",name:"Consommation de stupéfiant",ans:1,amende:20000,proc:"normale"},
 {code:"613-3",name:"Refus dépistage",ans:5,amende:50000,proc:"normale"},
-{code:"212-1",name:"Mise en danger vie d'autrui",ans:5,amende:40000,proc:"normale"},
-{code:"212-2",name:"Non-assistance personne en danger",ans:1,amende:10000,proc:"normale"},
-{code:"214-2",name:"Prise d'otage",ans:30,amende:400000,proc:"normale"},
+{code:"711-1",name:"Organisation/Participation jeux illégaux",ans:5,amende:100000,proc:"normale"},
+{code:"713-1",name:"Publicité jeux illégaux",ans:0,amende:75000,proc:"normale"},
+{code:"731-1",name:"Dispositifs truqués (Jeux)",ans:5,amende:150000,proc:"normale",note:"Saisie dispositifs"},
+{code:"741-1",name:"Mise à dispo locaux pour jeux",ans:5,amende:200000,proc:"normale",note:"Saisie biens"},
+
+// CODE DE LA ROUTE - NORMALE (sauf accidents mortels)
+{code:"CR1-01",name:"Excès de vitesse",ans:0,amende:1000,proc:"normale"},
+{code:"CR1-02",name:"Non-respect d'un STOP",ans:0,amende:1000,proc:"normale"},
+{code:"CR1-03",name:"Non-respect d'un feu tricolore",ans:0,amende:1500,proc:"normale"},
+{code:"CR1-04",name:"Refus priorité véhicule prioritaire",ans:0,amende:15000,proc:"normale",gav:4},
+{code:"CR1-05",name:"Conduite hors chaussée",ans:0,amende:10000,proc:"normale"},
+{code:"CR1-06",name:"Conduite à contresens",ans:0,amende:15000,proc:"normale"},
+{code:"CR1-07",name:"Franchissement ligne continue",ans:0,amende:1000,proc:"normale"},
+{code:"CR1-08",name:"Dépassement véhicule prioritaire",ans:0,amende:5000,proc:"normale"},
+{code:"CR1-09",name:"Téléphone au volant",ans:0,amende:500,proc:"normale"},
+{code:"CR1-10",name:"Klaxon abusif / sans danger",ans:0,amende:2000,proc:"normale"},
+{code:"CR1-11",name:"Conduite sous ivresse/stupéfiant",ans:0,amende:30000,proc:"normale",gav:48},
+{code:"CR1-12",name:"Course de rue",ans:0,amende:10000,proc:"normale"},
+{code:"CR1-13A",name:"Conduite sans permis",ans:0,amende:40000,proc:"normale",gav:5},
+{code:"CR1-13B",name:"Pilotage aérien sans brevet",ans:0,amende:60000,proc:"normale",gav:20},
+{code:"CR1-14A",name:"Accident involontaire",ans:0,amende:2000,proc:"normale"},
+{code:"CR1-14B",name:"Accident volontaire / en tort",ans:0,amende:15000,proc:"normale"},
+{code:"CR1-14C",name:"Accident involontaire mortel",ans:3,amende:30000,proc:"comparution"},
+{code:"CR1-14D",name:"Accident volontaire/tort mortel",ans:20,amende:50000,proc:"comparution"},
+{code:"CR1-15A",name:"Rodéo urbain (Cat A)",ans:0,amende:7500,proc:"normale",note:"Immobilisation"},
+{code:"CR1-15B",name:"Rodéo urbain (Cat B)",ans:0,amende:75000,proc:"normale"},
+{code:"CR1-15C",name:"Rodéo urbain (Cat C)",ans:0,amende:300000,proc:"normale",note:"Saisie véhicule"},
+{code:"CR2-01",name:"Défaut de feux",ans:0,amende:500,proc:"normale"},
+{code:"CR2-02",name:"Nuisance sonore véhicule",ans:0,amende:750,proc:"normale"},
+{code:"CR2-03",name:"Système hydraulique illégal",ans:0,amende:2000,proc:"normale",note:"Immobilisation"},
+{code:"CR2-04",name:"Conduite véhicule endommagé",ans:0,amende:500,proc:"normale"},
+{code:"CR2-05",name:"Régimes moteurs excessifs",ans:0,amende:1350,proc:"normale"},
+{code:"CR2-06",name:"Possession N.O.S illégal",ans:0,amende:10000,proc:"normale",note:"Immobilisation"},
+{code:"CR2-07",name:"Véhicule non homologué",ans:0,amende:30000,proc:"normale",note:"Saisie véhicule"},
+{code:"CR3-01",name:"Traversée hors passage piéton",ans:0,amende:500,proc:"normale"},
+{code:"CR3-02",name:"Refus contrôle routier (dispositif)",ans:2,amende:5000,proc:"normale"},
+{code:"CR3-03",name:"Ouverture dangereuse portière",ans:0,amende:50,proc:"normale"},
+{code:"CR3-04A",name:"Stationnement interdit (Terrestre)",ans:0,amende:1000,proc:"normale"},
+{code:"CR3-04A2",name:"Stationnement sens inverse",ans:0,amende:3000,proc:"normale"},
+{code:"CR3-04B",name:"Stationnement entravant FDO",ans:0,amende:3000,proc:"normale"},
+{code:"CR3-04C",name:"Stationnement interdit (Aérien)",ans:0,amende:20000,proc:"normale"},
+{code:"CR3-04D",name:"Stationnement place handicapé",ans:0,amende:15000,proc:"normale"},
+{code:"CR3-04E",name:"Vente sur place handicapé",ans:0,amende:50000,proc:"normale"}
 ];
 
 const CODE_PENAL=[
@@ -582,7 +608,7 @@ const CODE_PENAL=[
 {num:"213-11",name:"Non-respect du secret professionnel",body:"Révélation d'informations à caractère secret par une personne dépositaire.",peines:["10 ans + 20 000$"]},
 {num:"214-1",name:"Enlèvement et/ou séquestration",body:"Arrêter, enlever, détenir ou séquestrer une personne sans ordre légal.",peines:["15 ans + 300 000$","Si libération avant 7 jours : 13 ans + 200 000$"]},
 {num:"214-2",name:"Prise d'otage",body:"Séquestration d'une personne pour préparer un crime, faciliter une fuite ou obtenir une rançon.",peines:["30 ans + 400 000$"]},
-{num:"214-3",name:"Prise de pouvoir sur agent LSPD/fédéral",body:"Action visant à contraindre un agent de la LSPD ou fédéral dans l'exercice de ses fonctions.",peines:["LSPD : 20 ans + 200 000$","Agent fédéral : 30 ans + 350 000$"]},
+{num:"214-3",name:"Prise de pouvoir sur agent",body:"Action visant à contraindre un agent de la LSPD ou fédéral dans l'exercice de ses fonctions.",peines:["LSPD : 20 ans + 200 000$","Agent fédéral : 30 ans + 350 000$"]},
 {num:"215-1",name:"Violation de propriété privée",body:"Entrer ou séjourner sur une propriété privée sans permission.",peines:["12h GAV + 40 000$","Aggravée : 1 an + 80 000$"]},
 ]},
 {livre:"Livre III — Crimes contre l'État",articles:[
@@ -591,12 +617,13 @@ const CODE_PENAL=[
 {num:"311-6",name:"Usurpation de fonction",body:"Se faire passer intentionnellement pour un agent de l'État sans en avoir l'autorité légale.",peines:["5 ans + 50 000$"]},
 {num:"312-2",name:"Délit de fuite",body:"Ne pas s'arrêter après avoir causé un accident pour échapper à sa responsabilité.",peines:["3 ans + 50 000$"]},
 {num:"312-4",name:"Entrave à la justice",body:"Interférer ou obstruer le bon déroulement des procédures judiciaires.",peines:["5 ans + 70 000$"]},
-{num:"312-5",name:"Entrave à la justice (dépositaire ordre public)",body:"Fait par un officier des forces de l'ordre ou magistrat d'entraver la justice.",peines:["15 ans + 100 000$"]},
+{num:"312-5",name:"Entrave à la justice (dépositaire)",body:"Fait par un officier des forces de l'ordre ou magistrat d'entraver la justice.",peines:["15 ans + 100 000$"]},
 {num:"312-6",name:"Mensonge sous serment",body:"Témoignage mensonger fait sous serment devant une juridiction.",peines:["Peine fédérale"]},
 {num:"312-11",name:"Évasion",body:"Se soustraire volontairement à une garde à laquelle on est soumis.",peines:["Peine initiale × 2"]},
 {num:"313-4",name:"Création d'hostilité",body:"Acte intentionnel visant à provoquer la haine ou la violence envers une personne ou groupe.",peines:["20 ans + 100 000$"]},
 {num:"313-5",name:"Membre organisation criminelle",body:"Faire partie d'un groupement formé en vue de la préparation de crimes ou délits.",peines:["30 ans + 300 000$"]},
 {num:"321-1",name:"Corruption",body:"Proposer des avantages à une personne pour qu'elle accomplisse ou s'abstienne d'un acte de sa fonction.",peines:["5 ans + 100 000$"]},
+{num:"322-1",name:"Faux et usage de faux",body:"Toute altération frauduleuse de la vérité, de nature à causer un préjudice.",peines:["3 ans + 50 000$"]},
 {num:"331-1",name:"Terrorisme",body:"Actes intentionnels visant à troubler gravement l'ordre public par l'intimidation et la terreur.",peines:["Peine de mort"]},
 {num:"342-4",name:"Sabotage",body:"Détruire ou détourner du matériel de nature à porter atteinte aux intérêts fondamentaux des États-Unis.",peines:["30 ans + 400 000$","Au profit d'une puissance étrangère : Peine fédérale"]},
 {num:"343-4",name:"Coup d'État",body:"Toute action, complot ou conspiration visant à renverser illégalement le gouvernement.",peines:["Peine de mort","Tentative : Peine fédérale"]},
@@ -606,9 +633,11 @@ const CODE_PENAL=[
 {num:"411-2",name:"Braquage",body:"Utilisation de la force ou de la menace pour voler dans une maison ou entreprise.",peines:["30 ans + 200 000$"]},
 {num:"411-3",name:"Cambriolage",body:"Pénétrer illégalement dans un bâtiment avec l'intention de commettre un vol.",peines:["5 ans + 50 000$"]},
 {num:"412-2",name:"Racket aggravé",body:"Extorsion aggravée par violences, en bande organisée ou avec dissimulation du visage.",peines:["3 ans + 50 000$"]},
+{num:"412-4",name:"Non-paiement d'un service",body:"Le fait de ne pas payer un individu pour un service rendu.",peines:["Amende : Somme initiale × 3"]},
 {num:"413-1",name:"Escroquerie",body:"Tromper une personne par l'usage d'un faux nom ou de manœuvres frauduleuses.",peines:["8 ans + 50 000$"]},
 {num:"422-1",name:"Blanchiment",body:"Dissimuler des fonds ou biens de provenance illicite en les intégrant dans le circuit financier.",peines:["20 ans + 500 000$"]},
 {num:"422-2",name:"Blanchiment aggravé",body:"Blanchiment commis en réunion, en bande organisée ou de façon habituelle.",peines:["30 ans + 1 000 000$"]},
+{num:"423-1",name:"Détention excessive d'argent",body:"Possession excédant 500 000$ sans justification légale.",peines:["Saisie et enquête"]},
 ]},
 {livre:"Livre V — Armement",articles:[
 {num:"511-2",name:"Possession arme légale sans licence",body:"Posséder une arme légale sans le permis requis.",peines:["2 ans + 25 000$"]},
@@ -623,6 +652,20 @@ const CODE_PENAL=[
 {num:"612-2",name:"Distribution de stupéfiants",body:"Transfert à titre gratuit d'une substance contrôlée.",peines:["1 an + 30 000$"]},
 {num:"613-1",name:"Fabrication de stupéfiants",body:"Processus de production, transformation ou préparation de substances classées stupéfiants.",peines:["15 ans + 50 000$"]},
 {num:"613-4",name:"Participation à un Go-fast",body:"Transport organisé de stupéfiants à bord de véhicules d'un point A à un point B.",peines:["15 ans + 50 000$"]},
+]},
+{livre:"Livre VII — Jeux d'argent",articles:[
+{num:"711-1",name:"Organisation/Participation",body:"Organiser ou participer à des jeux d'argent en dehors des cadres autorisés.",peines:["5 ans + 100 000$"]},
+{num:"712-1",name:"Création/Exploitation",body:"Création, gestion ou exploitation d'un établissement impliqué dans des jeux d'argent non autorisés.",peines:["10 ans + 300 000$"]},
+{num:"721-1",name:"Blanchiment profits issus des jeux",body:"Toute tentative de blanchiment de profits générés par des jeux d'argent illégaux.",peines:["5 ans + 500 000$"]},
+{num:"722-1",name:"Implication mineurs/vulnérables",body:"Jeux d'argent illégaux impliquant des mineurs ou personnes vulnérables.",peines:["7 ans + 150 000$"]},
+{num:"731-1",name:"Dispositifs truqués",body:"Détenir ou utiliser des dispositifs truqués ou frauduleux dans des jeux d'argent.",peines:["5 ans + 150 000$","Saisie des dispositifs"]},
+]},
+{livre:"Code de la Route",articles:[
+{num:"CR1-11",name:"Conduite état d'ivresse/stupéfiant",body:"Conduire sous l'emprise d'un état alcoolique ou de produits stupéfiants.",peines:["48h GAV + 30 000$"]},
+{num:"CR1-13A",name:"Conduite sans permis",body:"Conduire un véhicule à moteur sans disposer du permis correspondant.",peines:["5h GAV + 40 000$"]},
+{num:"CR1-14C/D",name:"Accidents mortels",body:"Provoquer la mort d'un individu lors d'un accident de la route.",peines:["Involontaire : 3 ans + 30 000$","Volontaire/Tort : 20 ans + 50 000$"]},
+{num:"CR1-15",name:"Rodéo Urbain",body:"Adopter une conduite répétant intentionnellement des manœuvres dangereuses.",peines:["Cat A : 5 000 à 10 000$ + Immo","Cat B : 50 000 à 100 000$","Cat C : 100 000 à 500 000$ + Saisie"]},
+{num:"CR2-07",name:"Véhicule non homologué",body:"Circuler avec un véhicule non déclaré conforme aux normes de San Andreas.",peines:["30 000$ + Saisie"]},
 ]},
 ];
 
@@ -673,8 +716,9 @@ document.getElementById('statSel').textContent=selected.size;
 if(selected.size===0){
 document.getElementById('sel-chips').innerHTML='<div class="sel-empty">// Aucun délit sélectionné</div>';
 document.getElementById('metrics').innerHTML=`
-<div class="metric"><div class="metric-label">Peine totale</div><div class="metric-val">—</div></div>
-<div class="metric"><div class="metric-label">Amende totale</div><div class="metric-val">—</div></div>
+<div class="metric"><div class="metric-label">Peine (Années)</div><div class="metric-val">—</div></div>
+<div class="metric"><div class="metric-label">G.A.V (Heures)</div><div class="metric-val">—</div></div>
+<div class="metric full"><div class="metric-label">Amende totale</div><div class="metric-val">—</div></div>
 <div class="metric full"><div class="metric-label">Procédure applicable</div><div class="metric-val" style="font-size:16px">—</div></div>`;
 document.getElementById('proc-detail').innerHTML='<span style="color:var(--text3);font-family:var(--font-mono);font-size:12px">// Sélectionnez des délits</span>';
 document.getElementById('breakdown-list').innerHTML='<span style="color:var(--text3);font-family:var(--font-mono);font-size:12px">// Aucun délit</span>';
@@ -684,10 +728,13 @@ const items=DELITS.filter(d=>selected.has(d.code));
 const chips=document.getElementById('sel-chips');
 chips.innerHTML='<div class="sel-chips">'+items.map(d=>`<div class="sel-chip"><span>${d.name}</span><button onclick="removeDelit('${d.code}')">✕</button></div>`).join('')+'</div>';
 
-const totalAns=items.reduce((s,d)=>s+d.ans,0);
+const totalAns=items.reduce((s,d)=>s+(d.ans||0),0);
 const cappedAns=Math.min(totalAns,30);
 const isCapped=totalAns>30;
-const totalAmende=items.reduce((s,d)=>s+d.amende,0);
+
+const totalGav=items.reduce((s,d)=>s+(d.gav||0),0);
+const totalAmende=items.reduce((s,d)=>s+(d.amende||0),0);
+
 const hasBi=items.some(d=>d.proc==='bi');
 const hasComp=items.some(d=>d.proc==='comparution');
 const procType=hasBi?'bi':hasComp?'comparution':'normale';
@@ -695,18 +742,21 @@ const procLabel=procType==='bi'?'BUREAU B.I.':procType==='comparution'?'COMPARUT
 
 document.getElementById('metrics').innerHTML=`
 <div class="metric">
-<div class="metric-label">Peine totale</div>
+<div class="metric-label">Peine (Années)</div>
 <div class="metric-val ${isCapped?'warn':cappedAns>=20?'danger':cappedAns>0?'accent':''}">${fmtAns(cappedAns)}</div>
-${isCapped?`<div class="cap-note">⚠ Plafonné — calcul brut: ${totalAns} ans</div>`:''}
+${isCapped?`<div class="cap-note">⚠ Plafonné — brut: ${totalAns} ans</div>`:''}
 </div>
 <div class="metric">
+<div class="metric-label">G.A.V (Heures)</div>
+<div class="metric-val ${totalGav>0?'accent':''}">${totalGav>0?totalGav+'h':'—'}</div>
+</div>
+<div class="metric full">
 <div class="metric-label">Amende totale</div>
-<div class="metric-val accent" style="font-size:${totalAmende>999999?'16px':'22px'}">${fmt(totalAmende)}</div>
-<div class="metric-sub">Illimitée — non plafonnée</div>
+<div class="metric-val accent" style="font-size:${totalAmende>999999?'20px':'26px'}">${fmt(totalAmende)}</div>
 </div>
 <div class="metric full">
 <div class="metric-label">Procédure applicable</div>
-<div class="metric-val" style="font-size:15px;color:${procType==='bi'?'#c9a0ff':procType==='comparution'?'#7dd99a':'#82b8f0'}">${procLabel}</div>
+<div class="metric-val" style="font-size:16px;color:${procType==='bi'?'#c9a0ff':procType==='comparution'?'#7dd99a':'#82b8f0'}">${procLabel}</div>
 </div>`;
 
 const procBlocks={
@@ -748,7 +798,7 @@ document.getElementById('breakdown-list').innerHTML=items.map(d=>`<div class="br
 <span class="br-name">[${d.code}] ${d.name}</span>
 <div class="br-vals">
 ${d.note?`<span class="br-note">${d.note}</span>`:''}
-<span class="br-ans">${d.ans?d.ans+'a':'—'}</span>
+<span class="br-ans">${d.ans?d.ans+'a':(d.gav?d.gav+'h GAV':'—')}</span>
 <span class="br-amt">${d.amende?fmt(d.amende):'—'}</span>
 </div>
 </div>`).join('');
@@ -778,7 +828,6 @@ document.getElementById('page-'+name).classList.add('active');
 el.classList.add('active');
 }
 
-// CODE PENAL NAV
 function buildCodeNav(){
 const nav=document.getElementById('code-nav');
 nav.innerHTML=CODE_PENAL.map((livre,li)=>`
