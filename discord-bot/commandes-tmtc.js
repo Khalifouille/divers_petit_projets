@@ -25,6 +25,11 @@ const commands = [
         description: 'Dehors les migrants !',
     },
 
+    {
+        name: 'annoncewl',
+        description: 'WL WL WL',
+    },
+
 ];
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);

@@ -1,276 +1,94 @@
 require("dotenv").config();
+const fs = require('fs');
+const path = require('path');
+const { Client, GatewayIntentBits, Collection } = require('discord.js');
+const express = require('express');
+const app = express();
+app.use(express.json());
 
-const { Client, GatewayIntentBits, EmbedBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder, ComponentType, Collection} = require('discord.js');
 const token = process.env.TOKEN;
 const roledouane = process.env.ROLE_DOUANE;
-const https = require("https");
 
-const intents = [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildMessageReactions,
-    GatewayIntentBits.GuildVoiceStates,
-];
-
-const client = new Client({ intents });
-
-//------------------------------------------------ DEBUT DES CMDS
-
-client.on("ready", function () {
-    console.log("Je suis là");
-    client.user.setStatus('invisible')
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.GuildVoiceStates,
+    ]
 });
 
-client.on("messageCreate", function (message) {
+app.use(express.static('public'));
+
+const embedModule = require('./commands/embed.js');
+
+app.post('/api/inscription', async (req, res) => {
+    const { email } = req.body;
+
+    if (!email) {
+        return res.status(400).json({ error: "L'adresse email est requise." });
+    }
+
+    try {
+        await embedModule.sendRegistrationEmbed(client, email);
+        return res.status(200).json({ success: "Demande envoyée à Discord !" });
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Erreur interne du bot." });
+    }
+});
+
+app.listen(3000, () => {
+    console.log("Serveur Web et API lancés sur http://localhost:3000 !");
+});
+
+client.commands = new Collection();
+const commandsPath = path.join(__dirname, 'commands');
+const commandFiles = fs.readdirSync(commandsPath).filter(file => file.endsWith('.js'));
+
+for (const file of commandFiles) {
+    const filePath = path.join(commandsPath, file);
+    const command = require(filePath);
+    if ('name' in command && 'execute' in command) {
+        client.commands.set(command.name, command);
+    }
+}
+
+const dutyCommand = require('./commands/duty.js');
+
+client.on("ready", () => {
+    console.log("Je suis là");
+    client.user.setStatus('invisible');
+});
+
+client.on("messageCreate", (message) => {
     if (message.author.bot) return;
-    if (message.author.displayName === "Khali" && message.author.displayName === "Shino Akeshi") return;
-    if (message.content === "Israel" && message.author.displayName != "Khali" && message.author.displayName != "Shino Akeshi") {
+    if (message.author.displayName === "Khali" || message.author.displayName === "Shino Akeshi") return;
+    if (message.content === "Israel") {
         message.reply(":flag_ps:VIVE LA PALESTINE BANDE DE FILS DEUP:flag_ps:");
     }
 });
 
-// ---------------------------------------------------------------------------- DEBUT EMBED
-
-let changementcouleur = false;
-let changementfooter = false;
-let acceptwhit = false;
-let refuswhit = false;
-
 client.on("interactionCreate", async interaction => {
     if (!interaction.isChatInputCommand()) return;
-    if (interaction.commandName === "embed" && interaction.user.tag === "shinoakeshi") {
-        const embed = new EmbedBuilder()
-            .setTitle("2")
-            .setColor("Yellow")
-            .setTimestamp()
-            .setFooter({ text: "En attente de whitelist", iconURL: client.user.displayAvatarURL() })
-            .setDescription("Un utilisateur s'est inscrit avec l'adresse mail: shinoakeshi@gmail.com avec pour ID: 2");
 
-        const message = await interaction.reply({ embeds: [embed], fetchReply: true });
-        await message.react('👍');
-        await message.react('👎');
-        await message.react('🖕');
+    const command = client.commands.get(interaction.commandName);
+    if (!command) return;
 
-        const filter = async (reaction, user) => {
-            return ['👍','👎','🖕' ].includes(reaction.emoji.name) && user.id !== client.user.id;
-        };
-
-        const collector = message.createReactionCollector({ filter });
-
-        collector.on('collect', (reaction, user) => {
-            if (reaction.emoji.name === "👎" && !changementcouleur && !changementfooter){
-                embed.setColor("Red")
-                embed.setFooter({ text: `Whitelist refusée par : ${user.tag} (${user.id})`, iconURL: user.displayAvatarURL() })
-                changementcouleur = true
-                changementfooter = true
-                refuswhit = true
-            }if (reaction.emoji.name === "👍" && !changementcouleur && !changementfooter){
-                embed.setColor("Green")
-                embed.setFooter({ text: `Whitelist validée par : ${user.tag} (${user.id})`, iconURL: user.displayAvatarURL() })
-                changementcouleur = true
-                changementfooter = true
-                acceptwhit = true
-            }if (reaction.emoji.name === "🖕" && !refuswhit && !acceptwhit){
-                embed.setColor("Blue")
-                embed.setFooter({ text: `Deuxiéme chance donner par : ${user.tag} (${user.id})`, iconURL: user.displayAvatarURL() })
-
-            }
-
-            message.edit({ embeds: [embed] })
-            reaction.users.remove(user.id)
-
-        });
-
-        changementcouleur = false;
-        changementfooter = false;
-        refuswhit = false;
-        acceptwhit = false;
-    }else if (interaction.commandName === "embed" && interaction.user.tag === "khalifouille") {
-        const embed = new EmbedBuilder()
-            .setTitle("155")
-            .setColor("Yellow")
-            .setTimestamp()
-            .setFooter({ text: "En attente de whitelist", iconURL: client.user.displayAvatarURL() })
-            .setDescription("Un utilisateur s'est inscrit avec l'adresse mail: mohamedbrown@gmail.com avec pour ID: 155");
-
-        const message = await interaction.reply({ embeds: [embed], fetchReply: true });
-        await message.react('👍');
-        await message.react('👎');
-        await message.react('🖕');
-
-        const filter = async (reaction, user) => {
-            return ['👍','👎','🖕' ].includes(reaction.emoji.name) && user.id !== client.user.id;
-        };
-
-        const collector = message.createReactionCollector({ filter });
-
-        collector.on('collect', (reaction, user) => {
-            if (reaction.emoji.name === "👎" && !changementcouleur && !changementfooter){
-                embed.setColor("Red")
-                embed.setFooter({ text: `Whitelist refusée par : ${user.tag} (${user.id})`, iconURL: user.displayAvatarURL() })
-                changementcouleur = true
-                changementfooter = true
-                refuswhit = true
-            }if (reaction.emoji.name === "👍" && !changementcouleur && !changementfooter){
-                embed.setColor("Green")
-                embed.setFooter({ text: `Whitelist validée par : ${user.tag} (${user.id})`, iconURL: user.displayAvatarURL() })
-                changementcouleur = true
-                changementfooter = true
-                acceptwhit = true
-            }if (reaction.emoji.name === "🖕" && !refuswhit && !acceptwhit){
-                embed.setColor("Blue")
-                embed.setFooter({ text: `Deuxiéme chance donner par : ${user.tag} (${user.id})`, iconURL: user.displayAvatarURL() })
-
-            }
-
-            message.edit({ embeds: [embed] })
-            reaction.users.remove(user.id)
-
-        });
-
-        changementcouleur = false;
-        changementfooter = false;
-        refuswhit = false;
-        acceptwhit = false;
-    }
-});
-
-// ---------------------------------------------------------------------------- FIN EMBED // DEBUT CATFACT
-
-client.on("interactionCreate", async interaction => {
-    if (!interaction.isCommand()) return;
-    if (interaction.commandName === "catfact") {
-        const factnmbr = interaction.options.getInteger("nombre") || 1;
-        if (factnmbr < 1 || factnmbr >= 15) {
-            interaction.reply("https://tenor.com/view/islam-astaghfirullah-haram-gif-22586634");
-            return;
-        }
-
-        const url = `https://catfact.ninja/facts?limit=${factnmbr}`;
-
-        https.get(url, (response) => {
-            let data = "";
-            response.on("data", (chunk) => {
-                data += chunk;
-            });
-            response.on("end", () => {
-                const catFacts = JSON.parse(data).data;
-                const factText = catFacts.map((fact, index) => `- ${fact.fact}`).join('\n');
-
-                interaction.reply(`**Les faits demandés par ${interaction.user.tag} sont :** \n${factText}`);
-            });
-        });
-    }
-});
-
-// ---------------------------------------------------------------------------- FIN CATFACT // DEBUT DOUANE NEW
-
-let enservice = {};
-let IDsalonvoc = {};
-let verifsalon = false;
-
-// let Salons = [
-//     {idSalon: 0000000, idOwner: 000000}
-// ]
-// Salons.find((salon) => salon.idSalon === interaction.channel.id)
-// Salons.find((salon) => salon.idOwner === interaction.user.id)
-
-client.on("interactionCreate", async interaction => {
-    if (!interaction.isCommand()) return;
-    if (interaction.commandName === "duty") {
-        const douanier = interaction.member.roles.cache.some(role => role.id === roledouane);
-
-        if (!douanier) {
-            interaction.reply({
-                content: "https://tenor.com/view/michael-scott-no-no-no-no-no-no-gif-25279215",
-                ephemeral: true
-            })
-            console.log("Good")
-        } else if (douanier) {
-
-            const bouton = new ButtonBuilder()
-                .setLabel("Prise de service")
-                .setStyle(ButtonStyle.Success)
-                .setCustomId("boutonid1");
-            console.log("Go!")
-
-            const bouton2 = new ButtonBuilder()
-                .setLabel("Fin de service")
-                .setStyle(ButtonStyle.Danger)
-                .setCustomId("boutonid2");
-
-            const boutons = new ActionRowBuilder().addComponents(bouton, bouton2)
-            const rep = await interaction.reply({
-                content: "Voici les boutons avec lesquels je m'encule depuis +1h : ",
-                ephemeral: true,
-                components: [boutons]
-            },);
-
-            const collect = rep.createMessageComponentCollector({
-                componentType: ComponentType.Button,
-            });
-
-            collect.on('collect', async (interaction) => {
-                if (interaction.customId === 'boutonid1') {
-                    if (enservice[interaction.user.id]) {
-                        interaction.reply({
-                            content: "https://tenor.com/view/oh-jai-le-droit-de-gif-19520131",
-                            ephemeral: true
-                        })
-                    } else {
-                        enservice[interaction.user.id] = true;
-                        interaction.reply({
-                            content: "Vous venez de prendre votre service en tant que Douanier !",
-                            ephemeral: true
-                        });
-
-                        const salonvoccrea = await interaction.guild.channels.create({
-                            name: `Douane - ${interaction.user.displayName}`,
-                            type: 2,
-                            parent: "1042098326566338591",
-                            userLimit: 1,
-                        });
-                        IDsalonvoc[salonvoccrea.id] = interaction.user.id;
-                        verifsalon = true;
-                        console.log("Service activé");
-                    }
-
-                    enservice[interaction.user.id] = true;
-
-
-                }
-
-                if (interaction.customId === 'boutonid2') {
-                    if (!enservice[interaction.user.id]){
-                        interaction.reply({content: "Tu dois te mettre en service d'abord !", ephemeral: true})
-                        console.log("MET TOI EN SERVICE !")
-                    } else {
-                        interaction.reply({
-                            content: "Vous venez de prendre votre fin de service en tant que Douanier !",
-                            ephemeral: true
-                        })
-                        console.log("Service désactivé")
-                        let salon = Object.keys(IDsalonvoc).find((key) => IDsalonvoc[key] === interaction.user.id)
-                        console.log(salon)
-                        if (salon) {
-                            const salonvocsupp = interaction.guild.channels.cache.get(salon);
-                            if (salonvocsupp) {
-                                salonvocsupp.delete().then(() => {
-                                    delete IDsalonvoc[salon]
-                                    verifsalon = false;
-                                    enservice[interaction.user.id] = false;
-                                });
-                            }
-                        }
-                    }
-                }
-            });
+    try {
+        await command.execute(interaction, client);
+    } catch (error) {
+        console.error(error);
+        if (interaction.replied || interaction.deferred) {
+            await interaction.followUp({ content: 'Erreur lors de l\'exécution de la commande.', ephemeral: true });
+        } else {
+            await interaction.reply({ content: 'Erreur lors de l\'exécution de la commande.', ephemeral: true });
         }
     }
 });
 
-client.on('voiceStateUpdate', (oldState, newState) => {
+client.on('voiceStateUpdate', async (oldState, newState) => {
     const salonvocexpired = oldState.channel;
     const salonvoc = newState.channel;
     const membre = newState.member;
@@ -282,20 +100,28 @@ client.on('voiceStateUpdate', (oldState, newState) => {
             console.log("Le vocal est maintenant limité à 2 utilisateurs !");
         }
     } else if (possedeRoleSpecifique && salonvocexpired && salonvocexpired.userLimit === 2) {
-        salonvocexpired.edit({ userLimit: 1 });
-        console.log("Le vocal est maintenant limité à 1 utilisateur !");
+        try {
+            await salonvocexpired.edit({ userLimit: 1 });
+            console.log("Le vocal est maintenant limité à 1 utilisateur !");
+        } catch (error) {
+            if (error.code === 10003) {
+                console.log("Salon déjà supprimé, rien à faire.");
+            } else {
+                console.error("Erreur inattendue :", error);
+            }
+        }
     }
 
     if (salonvoc) {
-        console.log(`${membre.user.tag} a rejoint le salon vocal ${newState.channel.name}`);
+        console.log(`${membre.user.tag} a rejoint le salon vocal ${salonvoc.name}`);
+        delete dutyCommand.enservice[salonvoc.id];
     }
     if (salonvocexpired) {
-        console.log(`${membre.user.tag} a quitté le salon vocal ${oldState.channel.name}`);
-    }if (salonvoc) {
-        delete enservice[salonvoc.id];
+        console.log(`${membre.user.tag} a quitté le salon vocal ${salonvocexpired.name}`);
+    }
+    if (salonvoc) {
+        delete dutyCommand.enservice[salonvoc.id];
     }
 });
-
-//------------------------------------------------ FIN DES CMDS
 
 client.login(token);

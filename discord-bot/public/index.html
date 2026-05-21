@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - Phase de Test Whitelist</title>
+    <style>
+        body {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: #262626;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            width: 350px;
+            text-align: center;
+        }
+        h2 { margin-bottom: 20px; color: #ffcc00; }
+        input[type="email"] {
+            width: 90%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 4px;
+            background-color: #333;
+            color: #fff;
+        }
+        button {
+            width: 96%;
+            padding: 12px;
+            border: none;
+            border-radius: 4px;
+            background-color: #ffcc00;
+            color: #1a1a1a;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover { background-color: #e6b800; }
+        #message { margin-top: 15px; font-size: 14px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Création de Compte</h2>
+    <form id="registerForm">
+        <input type="email" id="email" placeholder="Entrez votre adresse mail" required>
+        <button type="submit">S'inscrire</button>
+    </form>
+    <div id="message"></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
